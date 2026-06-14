@@ -4,6 +4,7 @@ import {
 } from '@/lib/supabase/actions/reseau'
 import { safeFetch } from '@/lib/supabase/safe-fetch'
 import FeedClient, { type Post } from './client'
+import OnboardingModal from '@/components/reseau/OnboardingModal'
 
 export const dynamic = 'force-dynamic'
 
@@ -35,15 +36,18 @@ export default async function FeedPage() {
   }
 
   return (
-    <FeedClient
-      posts={posts}
-      currentUserId={profil?.id ?? null}
-      currentUserName={profil?.full_name ?? null}
-      onPublish={publier}
-      onDelete={supprimer}
-      onToggleLike={aimer}
-      onComment={commenter}
-      onDeleteComment={supprimerCommentaire}
-    />
+    <>
+      <OnboardingModal userName={profil?.full_name ?? null} onPublish={publier} />
+      <FeedClient
+        posts={posts}
+        currentUserId={profil?.id ?? null}
+        currentUserName={profil?.full_name ?? null}
+        onPublish={publier}
+        onDelete={supprimer}
+        onToggleLike={aimer}
+        onComment={commenter}
+        onDeleteComment={supprimerCommentaire}
+      />
+    </>
   )
 }
