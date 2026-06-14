@@ -103,9 +103,13 @@ export default function AnnuaireClient({ membres }: { membres: Membre[] }) {
         {filtered.map(m => (
           <div key={m.id} className="bg-white rounded-3xl border-2 border-stone-100 p-5 shadow-sm">
             <div className="flex items-start gap-3">
-              <div className="w-12 h-12 rounded-full bg-violet-700 text-white flex items-center justify-center font-black shrink-0 text-sm">
-                {initiales(m.full_name)}
-              </div>
+              {m.avatar_url ? (
+                <img src={m.avatar_url} alt={m.full_name} className="w-12 h-12 rounded-full object-cover shrink-0" />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-violet-700 text-white flex items-center justify-center font-black shrink-0 text-sm">
+                  {initiales(m.full_name)}
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <p className="font-black text-violet-900 leading-tight truncate">{m.full_name}</p>
                 {m.promotion && <p className="text-xs text-amber-600 font-bold">{m.promotion}</p>}

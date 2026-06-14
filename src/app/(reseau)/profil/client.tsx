@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import ImageUpload from '@/components/ui/ImageUpload'
 
 type Profil = {
   id: string
@@ -13,6 +14,7 @@ type Profil = {
   phone: string | null
   profession: string | null
   ville: string | null
+  avatar_url: string | null
 }
 
 const ROLE_LABEL: Record<string, string> = {
@@ -36,12 +38,15 @@ function Champ({ label, name, defaultValue, type = 'text' }: { label: string; na
 export default function ProfilClient({
   profil,
   onSave,
+  onSaveAvatar,
 }: {
   profil: Profil
   onSave: (fields: { full_name: string; bio?: string; phone?: string; profession?: string; ville?: string; promotion?: string }) => Promise<{ error?: string; success?: boolean }>
+  onSaveAvatar: (avatar_url: string) => Promise<{ error?: string; success?: boolean }>
 }) {
   const [message, setMessage] = useState('')
   const [erreur, setErreur] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(profil.avatar_url)
   const [pending, startTransition] = useTransition()
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -65,8 +70,25 @@ export default function ProfilClient({
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-16 h-16 rounded-2xl bg-violet-700 text-white flex items-center justify-center font-black text-xl shrink-0">
-          {initiales(profil.full_name)}
+        <div className="shrink-0">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={profil.full_name} className="w-16 h-16 rounded-2xl object-cover" />
+          ) : (
+            <div className="w-16 h-16 rounded-2xl bg-violet-700 text-white flex items-center justify-center font-black text-xl">
+              {initiales(profil.full_name)}
+            </div>
+          )}
+          <ImageUpload
+            folder="profils"
+            onUpload={url => {
+              setAvatarUrl(url)
+              startTransition(async () => {
+                const r = await onSaveAvatar(url)
+                if (r?.error) setErreur(r.error)
+              })
+            }}
+            className="mt-2"
+          />
         </div>
         <div>
           <h1 className="text-2xl font-black text-violet-900 leading-tight">{profil.full_name}</h1>

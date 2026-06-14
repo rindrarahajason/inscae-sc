@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import ImageUpload from '@/components/ui/ImageUpload'
 
 type Item = {
   id: string
@@ -31,17 +32,20 @@ export default function AdminActualitesClient({ items, onCreate, onUpdate, onDel
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState<Item | null>(null)
   const [form, setForm] = useState(emptyForm)
+  const [imageUrl, setImageUrl] = useState('')
   const [pending, startTransition] = useTransition()
 
   function openNew() {
     setEditItem(null)
     setForm(emptyForm)
+    setImageUrl('')
     setShowForm(true)
   }
 
   function openEdit(item: Item) {
     setEditItem(item)
     setForm({ titre: item.titre, contenu: item.contenu, extrait: item.extrait, categorie: item.categorie, image_url: '', publie: item.publie })
+    setImageUrl('')
     setShowForm(true)
   }
 
@@ -98,10 +102,11 @@ export default function AdminActualitesClient({ items, onCreate, onUpdate, onDel
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-stone-600 mb-1 uppercase tracking-wide">Image URL</label>
-                <input name="image_url" defaultValue={form.image_url}
-                  placeholder="https://..."
-                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+                <label className="block text-xs font-bold text-stone-600 mb-1 uppercase tracking-wide">Image</label>
+                <ImageUpload folder="actualites" onUpload={url => setImageUrl(url)} currentUrl={imageUrl || undefined} className="mb-2" />
+                <input name="image_url" type="hidden" value={imageUrl} onChange={() => {}} />
+                <input placeholder="Ou coller une URL image..." value={imageUrl} onChange={e => setImageUrl(e.target.value)}
+                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-violet-500 mt-2" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-bold text-stone-600 mb-1 uppercase tracking-wide">Extrait</label>

@@ -15,11 +15,12 @@ type Profil = {
   phone: string | null
   profession: string | null
   ville: string | null
+  avatar_url: string | null
 }
 
 const EMPTY: Profil = {
   id: '', full_name: '', email: '', role: 'membre', status: 'active',
-  promotion: null, bio: null, phone: null, profession: null, ville: null,
+  promotion: null, bio: null, phone: null, profession: null, ville: null, avatar_url: null,
 }
 
 export default async function ProfilPage() {
@@ -32,5 +33,10 @@ export default async function ProfilPage() {
     return updateMonProfil(fields)
   }
 
-  return <ProfilClient profil={profil} onSave={enregistrer} />
+  async function enregistrerAvatar(avatar_url: string) {
+    'use server'
+    return updateMonProfil({ full_name: profil.full_name, avatar_url } as Parameters<typeof updateMonProfil>[0])
+  }
+
+  return <ProfilClient profil={profil} onSave={enregistrer} onSaveAvatar={enregistrerAvatar} />
 }

@@ -129,6 +129,7 @@ export async function updateMonProfil(fields: {
   profession?: string
   ville?: string
   promotion?: string
+  avatar_url?: string
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
