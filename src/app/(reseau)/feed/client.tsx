@@ -17,12 +17,26 @@ export type Post = {
   id: string
   contenu: string
   image_url?: string | null
+  categorie?: string | null
   created_at: string
   auteur_id: string
   auteur: { id: string; full_name: string; avatar_url: string | null; promotion: string | null } | null
   likeCount: number
   likedByMe: boolean
   commentaires: Commentaire[]
+}
+
+const CATEGORIES = [
+  { label: 'Témoignage', emoji: '🙏', color: 'bg-violet-100 text-violet-700' },
+  { label: 'Prière', emoji: '✝️', color: 'bg-blue-100 text-blue-700' },
+  { label: 'Encouragement', emoji: '💪', color: 'bg-amber-100 text-amber-700' },
+  { label: 'Annonce', emoji: '📢', color: 'bg-rose-100 text-rose-700' },
+  { label: 'Événement', emoji: '📅', color: 'bg-teal-100 text-teal-700' },
+  { label: 'Discussion', emoji: '💬', color: 'bg-stone-100 text-stone-600' },
+]
+
+function catStyle(label: string) {
+  return CATEGORIES.find(c => c.label === label) ?? { emoji: '📌', color: 'bg-stone-100 text-stone-600' }
 }
 
 function initiales(nom: string) {
@@ -51,7 +65,7 @@ export default function FeedClient({
   posts: Post[]
   currentUserId: string | null
   currentUserName: string | null
-  onPublish: (contenu: string, image_url?: string) => Promise<{ error?: string; success?: boolean }>
+  onPublish: (contenu: string, image_url?: string, categorie?: string) => Promise<{ error?: string; success?: boolean }>
   onDelete: (id: string) => Promise<{ error?: string; success?: boolean }>
   onToggleLike: (id: string) => Promise<{ error?: string; success?: boolean }>
   onComment: (postId: string, contenu: string) => Promise<{ error?: string; success?: boolean }>
@@ -61,6 +75,8 @@ export default function FeedClient({
   const [texte, setTexte] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [imagePreview, setImagePreview] = useState('')
+  const [categorie, setCategorie] = useState('')
+  const [filtreCategorie, setFiltreCategorie] = useState('')
   const [uploading, setUploading] = useState(false)
   const [erreur, setErreur] = useState('')
   const [pending, startTransition] = useTransition()
@@ -96,9 +112,9 @@ export default function FeedClient({
     if (!contenu && !imageUrl) return
     setErreur('')
     startTransition(async () => {
-      const r = await onPublish(contenu, imageUrl || undefined)
+      const r = await onPublish(contenu, imageUrl || undefined, categorie || undefined)
       if (r?.error) setErreur(r.error)
-      else { setTexte(''); retirerImage(); router.refresh() }
+      else { setTexte(''); setCategorie(''); retirerImage(); router.refresh() }
     })
   }
 
@@ -125,7 +141,21 @@ export default function FeedClient({
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-black text-violet-900 mb-6">Fil d&apos;actualité</h1>
+      <h1 className="text-2xl font-black text-violet-900 mb-4">Fil d&apos;actualité</h1>
+
+      {/* Filtres catégories */}
+      <div className="flex gap-2 flex-wrap mb-5">
+        <button onClick={() => setFiltreCategorie('')}
+          className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors ${filtreCategorie === '' ? 'bg-violet-700 text-white border-violet-700' : 'border-stone-200 text-stone-500 hover:bg-stone-50'}`}>
+          Tout
+        </button>
+        {CATEGORIES.map(c => (
+          <button key={c.label} onClick={() => setFiltreCategorie(filtreCategorie === c.label ? '' : c.label)}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors ${filtreCategorie === c.label ? 'bg-violet-700 text-white border-violet-700' : 'border-stone-200 text-stone-500 hover:bg-stone-50'}`}>
+            {c.emoji} {c.label}
+          </button>
+        ))}
+      </div>
 
       {/* Formulaire de publication */}
       <div className="bg-white rounded-3xl border-2 border-stone-100 p-5 mb-6 shadow-sm">
@@ -154,6 +184,17 @@ export default function FeedClient({
               </div>
             )}
 
+            {/* Sélecteur de catégorie */}
+            <div className="flex gap-1.5 flex-wrap mt-3">
+              {CATEGORIES.map(c => (
+                <button key={c.label} type="button"
+                  onClick={() => setCategorie(categorie === c.label ? '' : c.label)}
+                  className={`px-2.5 py-1 rounded-full text-xs font-bold border-2 transition-colors ${categorie === c.label ? 'bg-violet-700 text-white border-violet-700' : 'border-stone-200 text-stone-400 hover:bg-stone-50'}`}>
+                  {c.emoji} {c.label}
+                </button>
+              ))}
+            </div>
+
             {uploading && <p className="text-xs text-stone-400 mt-1">Upload en cours...</p>}
             {erreur && <p className="text-xs text-rose-600 font-semibold mt-1">{erreur}</p>}
 
@@ -177,11 +218,14 @@ export default function FeedClient({
         </div>
       </div>
 
-      <div className="space-y-4">
-        {posts.length === 0 && (
-          <p className="text-stone-400 text-sm text-center py-12">Aucune publication pour le moment. Soyez le premier à publier !</p>
-        )}
-        {posts.map(p => {
+      {(() => {
+        const filtered = filtreCategorie ? posts.filter(p => p.categorie === filtreCategorie) : posts
+        if (filtered.length === 0) return (
+          <p className="text-stone-400 text-sm text-center py-12">
+            {filtreCategorie ? `Aucune publication en "${filtreCategorie}" pour le moment.` : 'Aucune publication pour le moment. Soyez le premier à publier !'}
+          </p>
+        )
+        return <div className="space-y-4">{filtered.map(p => {
           const ouvert = ouverts[p.id] ?? false
           return (
             <div key={p.id} className="bg-white rounded-3xl border-2 border-stone-100 p-5 shadow-sm">
@@ -194,7 +238,14 @@ export default function FeedClient({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <div>
-                      <p className="font-black text-violet-900 text-sm leading-tight">{p.auteur?.full_name ?? 'Membre'}</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-black text-violet-900 text-sm leading-tight">{p.auteur?.full_name ?? 'Membre'}</p>
+                        {p.categorie && (() => { const s = catStyle(p.categorie); return (
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${s.color}`}>
+                            {s.emoji} {p.categorie}
+                          </span>
+                        )})()}
+                      </div>
                       <p className="text-xs text-stone-400">
                         {p.auteur?.promotion ? `${p.auteur.promotion} · ` : ''}{depuis(p.created_at)}
                       </p>
@@ -275,8 +326,8 @@ export default function FeedClient({
               </div>
             </div>
           )
-        })}
-      </div>
+        })}</div>
+      })()}
     </div>
   )
 }

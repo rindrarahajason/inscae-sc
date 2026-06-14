@@ -37,6 +37,7 @@ export async function getPosts() {
       id: p.id,
       contenu: p.contenu,
       image_url: p.image_url ?? null,
+      categorie: p.categorie ?? null,
       created_at: p.created_at,
       auteur_id: p.auteur_id,
       auteur: p.auteur,
@@ -47,11 +48,11 @@ export async function getPosts() {
   })
 }
 
-export async function createPost(contenu: string, image_url?: string) {
+export async function createPost(contenu: string, image_url?: string, categorie?: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non connecté' }
-  const { error } = await supabase.from('posts').insert({ auteur_id: user.id, contenu, image_url: image_url || null })
+  const { error } = await supabase.from('posts').insert({ auteur_id: user.id, contenu, image_url: image_url || null, categorie: categorie || null })
   if (error) return { error: error.message }
   revalidatePath('/feed')
   return { success: true }
