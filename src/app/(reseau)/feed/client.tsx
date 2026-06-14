@@ -214,8 +214,8 @@ export default function FeedClient({
                   {/* Image du post */}
                   {p.image_url && (
                     <div className="mt-3 rounded-2xl overflow-hidden">
-                      <Image src={p.image_url} alt="Image du post" width={600} height={400}
-                        className="w-full object-cover max-h-80 rounded-2xl" />
+                      <Image src={p.image_url} alt="Image du post" width={800} height={800}
+                        className="w-full h-auto rounded-2xl object-contain" />
                     </div>
                   )}
 
