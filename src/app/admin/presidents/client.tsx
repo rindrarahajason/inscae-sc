@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import ImageUpload from '@/components/ui/ImageUpload'
 
 type Item = {
   id: string
@@ -29,10 +30,11 @@ function annee(d: string | null | undefined) {
 export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDelete }: Props) {
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState<Item | null>(null)
+  const [photoUrl, setPhotoUrl] = useState('')
   const [pending, startTransition] = useTransition()
 
-  function openNew() { setEditItem(null); setShowForm(true) }
-  function openEdit(item: Item) { setEditItem(item); setShowForm(true) }
+  function openNew() { setEditItem(null); setPhotoUrl(''); setShowForm(true) }
+  function openEdit(item: Item) { setEditItem(item); setPhotoUrl(item.photo_url ?? ''); setShowForm(true) }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -83,10 +85,11 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
                 </label>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Photo URL</label>
-                <input name="photo_url" defaultValue={editItem?.photo_url ?? ''}
-                  placeholder="https://..."
-                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Photo</label>
+                <ImageUpload folder="presidents" onUpload={url => setPhotoUrl(url)} currentUrl={photoUrl || undefined} className="mb-2" />
+                <input name="photo_url" type="hidden" value={photoUrl} onChange={() => {}} />
+                <input placeholder="Ou coller une URL image..." value={photoUrl} onChange={e => setPhotoUrl(e.target.value)}
+                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-violet-500 mt-2" />
               </div>
               <div className="md:col-span-3">
                 <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Biographie courte</label>

@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import ImageUpload from '@/components/ui/ImageUpload'
 
 type Item = {
   id: string
@@ -13,6 +14,7 @@ type Item = {
   actif: boolean
   nouveau?: boolean
   couleur?: string | null
+  image_url?: string | null
 }
 
 type Props = {
@@ -25,10 +27,11 @@ type Props = {
 export default function AdminGoodiesClient({ items, onCreate, onUpdate, onDelete }: Props) {
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState<Item | null>(null)
+  const [imageUrl, setImageUrl] = useState('')
   const [pending, startTransition] = useTransition()
 
-  function openNew() { setEditItem(null); setShowForm(true) }
-  function openEdit(item: Item) { setEditItem(item); setShowForm(true) }
+  function openNew() { setEditItem(null); setImageUrl(''); setShowForm(true) }
+  function openEdit(item: Item) { setEditItem(item); setImageUrl(item.image_url ?? ''); setShowForm(true) }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -83,10 +86,11 @@ export default function AdminGoodiesClient({ items, onCreate, onUpdate, onDelete
                 </label>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Image URL</label>
-                <input name="image_url" defaultValue=''
-                  placeholder="https://..."
-                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Image</label>
+                <ImageUpload folder="goodies" onUpload={url => setImageUrl(url)} currentUrl={imageUrl || undefined} className="mb-2" />
+                <input name="image_url" type="hidden" value={imageUrl} onChange={() => {}} />
+                <input placeholder="Ou coller une URL image..." value={imageUrl} onChange={e => setImageUrl(e.target.value)}
+                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-violet-500 mt-2" />
               </div>
               <div className="md:col-span-3">
                 <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Description</label>
