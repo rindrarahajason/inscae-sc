@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Home, MessageSquare, Users, User, LayoutDashboard } from 'lucide-react'
+import { Home, MessageSquare, Users, User, LayoutDashboard, UserPlus } from 'lucide-react'
 import MemberSignOut from '@/components/reseau/MemberSignOut'
 import { getCurrentProfile } from '@/lib/supabase/actions/reseau'
 import { isSupabaseConfigured } from '@/lib/supabase/safe-fetch'
@@ -9,6 +9,7 @@ const NAV = [
   { href: '/feed',       label: "Fil d'actualité", icon: Home },
   { href: '/annuaire',   label: 'Annuaire',         icon: Users },
   { href: '/messagerie', label: 'Messagerie',       icon: MessageSquare },
+  { href: '/inviter',    label: 'Inviter un ami',   icon: UserPlus },
   { href: '/profil',     label: 'Mon profil',       icon: User },
 ]
 
