@@ -31,7 +31,10 @@ export default function DonsPage() {
 
           {/* Formulaire */}
           <div className="bg-white rounded-3xl border-2 border-stone-100 p-8 shadow-sm">
-            <h2 className="text-2xl font-black text-stone-800 mb-6">Faire un don en ligne</h2>
+            <h2 className="text-2xl font-black text-stone-800 mb-2">Faire un don</h2>
+            <p className="text-sm text-stone-400 mb-6 font-semibold">
+              Le paiement est manuel — un membre du bureau confirmera votre don.
+            </p>
 
             <p className="text-xs font-bold uppercase tracking-wide text-stone-500 mb-3">Choisissez un montant</p>
             <div className="grid grid-cols-3 gap-2 mb-4">
@@ -55,16 +58,44 @@ export default function DonsPage() {
             <div className="space-y-3 mb-6">
               <input type="text" placeholder="Votre nom (optionnel)"
                 className="w-full border-2 border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-violet-400" />
-              <input type="email" placeholder="Email (pour reçu)"
+              <input type="email" placeholder="Email (optionnel)"
                 className="w-full border-2 border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-violet-400" />
             </div>
 
-            <button className="w-full bg-violet-700 text-white font-black py-3.5 rounded-full hover:bg-violet-600 transition-colors text-base shadow-lg shadow-violet-200">
-              💳 Donner maintenant
-            </button>
-            <p className="text-center text-xs text-stone-400 mt-3 flex items-center justify-center gap-1">
-              🔒 Paiement sécurisé par Stripe
-            </p>
+            {/* Payment methods */}
+            <div className="space-y-3">
+              {/* MVola */}
+              <div className="border-2 border-violet-100 bg-violet-50 rounded-2xl p-4">
+                <h3 className="font-black text-violet-900 mb-1 text-sm flex items-center gap-2">📱 Don via MVola</h3>
+                <p className="text-xs text-violet-700 font-semibold mb-2">
+                  Envoyez votre don au numéro MVola du bureau, puis contactez-nous avec votre numéro d&apos;opération.
+                </p>
+                <div className="bg-white rounded-xl px-4 py-2.5 text-sm border-2 border-violet-100">
+                  <p className="text-xs text-stone-400">Numéro MVola</p>
+                  <p className="font-black text-violet-900 text-lg tracking-widest">034 XX XXX XX</p>
+                  <p className="text-xs text-stone-400 mt-1">Intitulé : <strong>DON ISC</strong></p>
+                </div>
+              </div>
+
+              {/* PayPal */}
+              <div className="border-2 border-blue-100 bg-blue-50 rounded-2xl p-4">
+                <h3 className="font-black text-blue-900 mb-1 text-sm flex items-center gap-2">💳 Don via PayPal</h3>
+                <p className="text-xs text-blue-700 font-semibold mb-2">
+                  Effectuez votre virement PayPal à l&apos;adresse ci-dessous et envoyez-nous la confirmation.
+                </p>
+                <div className="bg-white rounded-xl px-4 py-2.5 text-sm border-2 border-blue-100">
+                  <p className="text-xs text-stone-400">Adresse PayPal</p>
+                  <p className="font-black text-blue-900 text-sm">inscae.sc@gmail.com</p>
+                  <p className="text-xs text-stone-400 mt-1">Note : <strong>DON ISC</strong></p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
+              <p className="text-amber-800 text-xs font-semibold">
+                ℹ️ Le paiement est traité manuellement. Un membre du bureau vous contactera pour confirmer la réception de votre don.
+              </p>
+            </div>
           </div>
 
           {/* Info */}
@@ -82,16 +113,6 @@ export default function DonsPage() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            <div className="bg-amber-50 border-2 border-amber-200 rounded-3xl p-6">
-              <h3 className="font-black text-amber-900 mb-3 text-lg">🏦 Don par virement</h3>
-              <div className="bg-white rounded-xl p-4 text-sm space-y-1.5 border-2 border-amber-100">
-                <p><span className="text-stone-400 text-xs">Banque</span><br /><strong className="text-stone-800">BFV-SG Madagascar</strong></p>
-                <p><span className="text-stone-400 text-xs">Compte</span><br /><strong className="font-mono text-stone-800">00001-00000-XXXXXXXX</strong></p>
-                <p><span className="text-stone-400 text-xs">Intitulé</span><br /><strong className="text-stone-800">INSCAE Section Chrétienne</strong></p>
-              </div>
-              <p className="text-amber-700 text-xs mt-3 font-semibold">Référence : &quot;DON ISC&quot;</p>
             </div>
           </div>
         </div>

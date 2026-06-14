@@ -39,3 +39,14 @@ export async function deleteActivite(id: string) {
   revalidatePath('/activites')
   revalidatePath('/admin/activites')
 }
+
+export async function getActivite(id: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('activites')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (error) throw error
+  return data
+}

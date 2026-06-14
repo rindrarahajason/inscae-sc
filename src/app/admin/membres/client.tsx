@@ -2,6 +2,7 @@
 
 import React, { useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
 
 type Item = {
   id: string
@@ -22,6 +23,7 @@ type Props = {
   onSetRole: (data: FormData) => Promise<void>
   onSetStatus: (data: FormData) => Promise<void>
   onDelete: (data: FormData) => Promise<void>
+  onCreate: (data: FormData) => Promise<{ error?: string; success?: boolean } | void>
 }
 
 const statusVariant: Record<string, 'green' | 'yellow' | 'red'> = {
@@ -31,10 +33,12 @@ const statusLabel: Record<string, string> = {
   active: 'Actif', pending: 'En attente', suspended: 'Suspendu',
 }
 
-export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDelete }: Props) {
+export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDelete, onCreate }: Props) {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
   const [expanded, setExpanded] = useState<string | null>(null)
+  const [showCreate, setShowCreate] = useState(false)
+  const [createError, setCreateError] = useState('')
   const [pending, startTransition] = useTransition()
 
   function sendStatus(id: string, status: string) {
@@ -51,6 +55,20 @@ export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDe
     if (!confirm('Supprimer ce membre définitivement ?')) return
     const fd = new FormData(); fd.append('id', id)
     startTransition(() => onDelete(fd))
+  }
+
+  function handleCreate(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setCreateError('')
+    const fd = new FormData(e.currentTarget)
+    startTransition(async () => {
+      const result = await onCreate(fd)
+      if (result?.error) {
+        setCreateError(result.error)
+      } else {
+        setShowCreate(false)
+      }
+    })
   }
 
   const filtered = items.filter(i => {
@@ -76,19 +94,71 @@ export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDe
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-3 mb-4">
-        <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Rechercher un membre..."
-          className="border-2 border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-violet-500 w-64" />
-        <div className="flex gap-2">
-          {[['all', 'Tous'], ['active', 'Actifs'], ['pending', 'En attente'], ['suspended', 'Suspendus']].map(([val, lbl]) => (
-            <button key={val} onClick={() => setFilter(val)}
-              className={`px-3 py-1.5 text-xs rounded-full border-2 font-bold transition-colors ${filter === val ? 'bg-violet-700 text-white border-violet-700' : 'border-stone-200 text-stone-600 hover:bg-stone-50'}`}>
-              {lbl}
-            </button>
-          ))}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <input value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Rechercher un membre..."
+            className="border-2 border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-violet-500 w-64" />
+          <div className="flex gap-2">
+            {[['all', 'Tous'], ['active', 'Actifs'], ['pending', 'En attente'], ['suspended', 'Suspendus']].map(([val, lbl]) => (
+              <button key={val} onClick={() => setFilter(val)}
+                className={`px-3 py-1.5 text-xs rounded-full border-2 font-bold transition-colors ${filter === val ? 'bg-violet-700 text-white border-violet-700' : 'border-stone-200 text-stone-600 hover:bg-stone-50'}`}>
+                {lbl}
+              </button>
+            ))}
+          </div>
         </div>
+        <Button onClick={() => { setShowCreate(true); setCreateError('') }}>+ Ajouter un membre</Button>
       </div>
+
+      {showCreate && (
+        <div className="bg-white rounded-2xl border-2 border-stone-100 p-6 mb-6 shadow-sm">
+          <h2 className="font-black text-violet-900 mb-2">Ajouter un membre manuellement</h2>
+          <p className="text-xs text-stone-400 mb-5">La personne recevra un email pour définir son mot de passe.</p>
+          {createError && (
+            <div className="bg-rose-50 border-2 border-rose-200 rounded-xl p-3 mb-4 text-sm text-rose-700 font-semibold">{createError}</div>
+          )}
+          <form onSubmit={handleCreate} className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Nom complet *</label>
+              <input name="full_name" required className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Email *</label>
+              <input name="email" type="email" required className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Rôle</label>
+              <select name="role" className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500">
+                <option value="membre">Membre</option>
+                <option value="bureau">Bureau</option>
+                <option value="admin">Admin</option>
+                <option value="super_admin">Super Admin</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Promotion</label>
+              <input name="promotion" placeholder="ex : 40e promotion" className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Téléphone</label>
+              <input name="phone" type="tel" className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Profession</label>
+              <input name="profession" className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Ville</label>
+              <input name="ville" className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+            </div>
+            <div className="sm:col-span-2 flex gap-3 pt-2">
+              <Button type="submit" disabled={pending}>{pending ? 'Envoi...' : 'Créer et envoyer l\'invitation'}</Button>
+              <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>Annuler</Button>
+            </div>
+          </form>
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl border-2 border-stone-100 overflow-hidden">
         <table className="w-full text-sm">
@@ -160,16 +230,13 @@ export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDe
                   <td colSpan={5} className="px-4 py-4">
                     <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-xs">
                       {item.phone && (
-                        <div><span className="font-black text-stone-400 uppercase tracking-wide">Téléphone</span> <span className="text-stone-700">{item.phone}</span></div>
+                        <div><span className="font-black text-stone-400 uppercase tracking-wide">Téléphone</span> <span className="text-stone-700 ml-2">{item.phone}</span></div>
                       )}
                       {item.profession && (
-                        <div><span className="font-black text-stone-400 uppercase tracking-wide">Profession</span> <span className="text-stone-700">{item.profession}</span></div>
+                        <div><span className="font-black text-stone-400 uppercase tracking-wide">Profession</span> <span className="text-stone-700 ml-2">{item.profession}</span></div>
                       )}
                       {item.ville && (
-                        <div><span className="font-black text-stone-400 uppercase tracking-wide">Ville</span> <span className="text-stone-700">{item.ville}</span></div>
-                      )}
-                      {item.promotion && (
-                        <div className="md:hidden"><span className="font-black text-stone-400 uppercase tracking-wide">Promotion</span> <span className="text-stone-700">{item.promotion}</span></div>
+                        <div><span className="font-black text-stone-400 uppercase tracking-wide">Ville</span> <span className="text-stone-700 ml-2">{item.ville}</span></div>
                       )}
                       {item.bio && (
                         <div className="sm:col-span-2">

@@ -41,8 +41,45 @@ export async function reactiverMembre(id: string) {
 
 export async function deleteMembre(id: string) {
   const supabase = await createAdminClient()
-  // Supprimer le profil (la suppression du user auth se fait via Supabase dashboard ou edge function)
-  const { error } = await supabase.from('profiles').delete().eq('id', id)
-  if (error) throw error
+  // Supprimer l'utilisateur auth (cascade sur profiles via trigger)
+  const { error } = await supabase.auth.admin.deleteUser(id)
+  if (error) {
+    // Fallback: supprimer juste le profil si l'auth delete échoue
+    await supabase.from('profiles').delete().eq('id', id)
+  }
   revalidatePath('/admin/membres')
+}
+
+export async function creerMembre(form: {
+  email: string
+  full_name: string
+  role?: string
+  promotion?: string
+  phone?: string
+  profession?: string
+  ville?: string
+}) {
+  const supabase = await createAdminClient()
+
+  // Invite l'utilisateur par email — il reçoit un lien pour définir son mot de passe
+  const { data, error } = await supabase.auth.admin.inviteUserByEmail(form.email, {
+    data: { full_name: form.full_name },
+  })
+  if (error) return { error: error.message }
+
+  // Mettre à jour le profil avec les infos supplémentaires et le statut actif
+  if (data.user) {
+    await supabase.from('profiles').update({
+      full_name:  form.full_name,
+      role:       form.role ?? 'membre',
+      status:     'active',
+      promotion:  form.promotion  || null,
+      phone:      form.phone      || null,
+      profession: form.profession || null,
+      ville:      form.ville      || null,
+    }).eq('id', data.user.id)
+  }
+
+  revalidatePath('/admin/membres')
+  return { success: true }
 }

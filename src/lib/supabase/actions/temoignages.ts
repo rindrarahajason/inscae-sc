@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function getTemoignages(valideSeulement = false) {
@@ -15,7 +15,8 @@ export async function getTemoignages(valideSeulement = false) {
 export async function createTemoignage(form: {
   auteur_nom: string; contenu: string; auteur_promo?: string
 }) {
-  const supabase = await createClient()
+  // On utilise le client admin pour contourner RLS (soumission publique sans auth)
+  const supabase = await createAdminClient()
   const { error } = await supabase.from('temoignages').insert({ ...form, valide: false })
   if (error) throw error
   revalidatePath('/admin/temoignages')

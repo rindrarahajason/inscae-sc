@@ -49,3 +49,14 @@ export async function deleteActualite(id: string) {
 export async function togglePublieActualite(id: string, publie: boolean) {
   return updateActualite(id, { publie })
 }
+
+export async function getActualite(id: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('actualites')
+    .select('*, auteur:profiles(full_name)')
+    .eq('id', id)
+    .single()
+  if (error) throw error
+  return data
+}

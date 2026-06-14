@@ -97,7 +97,7 @@ export default async function InscriptionPage({
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-black text-stone-500 mb-1.5 uppercase tracking-wide">Promotion</label>
-                  <input type="text" name="promotion" placeholder="ex : INSCAE 2024"
+                  <input type="text" name="promotion" placeholder="ex : 40e promotion"
                     className="w-full border-2 border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-violet-500" />
                 </div>
                 <div>

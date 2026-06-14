@@ -1,5 +1,6 @@
 import { getActualites } from '@/lib/supabase/actions/actualites'
 import { safeFetch } from '@/lib/supabase/safe-fetch'
+import Link from 'next/link'
 
 export const metadata = { title: 'Actualités — INSCAE Section Chrétienne' }
 export const revalidate = 60
@@ -44,6 +45,7 @@ export default async function ActualitesPage() {
         {featured && (
           <div className="mb-10">
             <p className="text-xs font-black uppercase tracking-widest text-amber-600 mb-4">🔥 À la une</p>
+            <Link href={'/actualites/' + featured.id} className="block">
             <div className="bg-white rounded-3xl border-2 border-stone-100 overflow-hidden grid md:grid-cols-5 card-lift">
               <div className="md:col-span-2">
                 <img src={featured.image_url ?? `https://picsum.photos/seed/${featured.id}/600/400`}
@@ -65,12 +67,14 @@ export default async function ActualitesPage() {
                 </div>
               </div>
             </div>
+            </Link>
           </div>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {rest.map((a) => (
-            <div key={a.id} className="bg-white rounded-3xl border-2 border-stone-100 overflow-hidden card-lift group cursor-pointer">
+            <Link key={a.id} href={'/actualites/' + a.id} className="block">
+            <div className="bg-white rounded-3xl border-2 border-stone-100 overflow-hidden card-lift group">
               <div className="overflow-hidden">
                 <img src={a.image_url ?? `https://picsum.photos/seed/${a.id}/400/300`}
                   alt={a.titre}
@@ -90,6 +94,7 @@ export default async function ActualitesPage() {
                 </div>
               </div>
             </div>
+            </Link>
           ))}
         </div>
       </section>

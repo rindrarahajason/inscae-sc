@@ -1,5 +1,6 @@
 import { getActivites } from '@/lib/supabase/actions/activites'
 import { safeFetch } from '@/lib/supabase/safe-fetch'
+import Link from 'next/link'
 
 export const metadata = { title: 'Activités — INSCAE Section Chrétienne' }
 export const revalidate = 60
@@ -44,7 +45,8 @@ export default async function ActivitesPage() {
           {data.map(a => {
             const stat = statutConfig[a.statut] ?? statutConfig.a_venir
             return (
-              <div key={a.id} className="bg-white rounded-3xl overflow-hidden border-2 border-stone-100 card-lift group">
+              <Link href={'/activites/' + a.id} key={a.id}>
+              <div className="bg-white rounded-3xl overflow-hidden border-2 border-stone-100 card-lift group">
                 <div className="relative overflow-hidden">
                   <img src={a.image_url ?? `https://picsum.photos/seed/${a.id}/600/400`}
                     alt={a.titre}
@@ -75,6 +77,7 @@ export default async function ActivitesPage() {
                   </div>
                 </div>
               </div>
+              </Link>
             )
           })}
         </div>

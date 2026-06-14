@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Home, MessageSquare, Users, User } from 'lucide-react'
+import { Home, MessageSquare, Users, User, LayoutDashboard } from 'lucide-react'
 import MemberSignOut from '@/components/reseau/MemberSignOut'
 import { getCurrentProfile } from '@/lib/supabase/actions/reseau'
 import { isSupabaseConfigured } from '@/lib/supabase/safe-fetch'
@@ -12,16 +12,21 @@ const NAV = [
   { href: '/profil',     label: 'Mon profil',       icon: User },
 ]
 
+const ADMIN_ROLES = ['super_admin', 'admin', 'bureau']
+
 export default async function ReseauLayout({ children }: { children: React.ReactNode }) {
+  let profil = null
   if (isSupabaseConfigured()) {
-    const profil = await getCurrentProfile()
+    profil = await getCurrentProfile()
     if (!profil) redirect('/auth/connexion')
     if (profil.status !== 'active') redirect('/auth/en-attente')
   }
 
+  const isAdmin = profil && ADMIN_ROLES.includes(profil.role)
+
   return (
     <div className="min-h-screen bg-[#FFFBF0] flex">
-      {/* Sidebar */}
+      {/* Sidebar desktop */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r-2 border-stone-100 p-4 sticky top-0 h-screen">
         <div className="mb-8">
           <Link href="/" className="flex items-center gap-2 font-black text-violet-900 text-lg">
@@ -39,8 +44,14 @@ export default async function ReseauLayout({ children }: { children: React.React
             </Link>
           ))}
         </nav>
-        <div className="border-t-2 border-stone-100 pt-4 space-y-3">
-          <Link href="/" className="block text-xs text-stone-400 hover:text-violet-700 transition-colors">
+        <div className="border-t-2 border-stone-100 pt-4 space-y-2">
+          {isAdmin && (
+            <Link href="/admin" className="flex items-center gap-2 px-3 py-2 rounded-xl text-violet-700 bg-violet-50 hover:bg-violet-100 transition-colors text-sm font-bold">
+              <LayoutDashboard size={16} />
+              Tableau de bord admin
+            </Link>
+          )}
+          <Link href="/" className="block text-xs text-stone-400 hover:text-violet-700 transition-colors px-3 py-1">
             ← Retour au site public
           </Link>
           <MemberSignOut />
@@ -51,10 +62,18 @@ export default async function ReseauLayout({ children }: { children: React.React
       <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t-2 border-stone-100 flex justify-around py-2 z-40">
         {NAV.map(({ href, label, icon: Icon }) => (
           <Link key={href} href={href} aria-label={label}
-            className="flex flex-col items-center gap-0.5 px-3 py-1 text-stone-500 hover:text-violet-700">
+            className="flex flex-col items-center gap-0.5 px-2 py-1 text-stone-500 hover:text-violet-700">
             <Icon size={20} />
+            <span className="text-[10px] font-semibold">{label.split("'")[0].split(' ')[0]}</span>
           </Link>
         ))}
+        {isAdmin && (
+          <Link href="/admin" aria-label="Admin"
+            className="flex flex-col items-center gap-0.5 px-2 py-1 text-violet-600 hover:text-violet-800">
+            <LayoutDashboard size={20} />
+            <span className="text-[10px] font-semibold">Admin</span>
+          </Link>
+        )}
       </nav>
 
       {/* Contenu */}

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { PageHeader } from '@/components/admin/PageHeader'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 
@@ -76,11 +75,9 @@ export default function AdminActualitesClient({ items, onCreate, onUpdate, onDel
 
   return (
     <div>
-      <PageHeader
-        titre="Actualités"
-        description="Gérez les articles publiés sur le site."
-        action={<Button onClick={openNew}>+ Nouvel article</Button>}
-      />
+      <div className="flex justify-end mb-6">
+        <Button onClick={openNew}>+ Nouvel article</Button>
+      </div>
 
       {showForm && (
         <div className="bg-white rounded-2xl border-2 border-stone-100 p-6 mb-6 shadow-sm">
