@@ -13,9 +13,9 @@ export default async function FeedPage() {
     safeFetch(() => getCurrentProfile(), null),
   ])
 
-  async function publier(contenu: string) {
+  async function publier(contenu: string, image_url?: string) {
     'use server'
-    return createPost(contenu)
+    return createPost(contenu, image_url)
   }
   async function supprimer(id: string) {
     'use server'

@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Trash2, Send, Heart, MessageCircle } from 'lucide-react'
+import { Trash2, Send, Heart, MessageCircle, ImagePlus, X } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import Image from 'next/image'
 
 export type Commentaire = {
   id: string
@@ -14,6 +16,7 @@ export type Commentaire = {
 export type Post = {
   id: string
   contenu: string
+  image_url?: string | null
   created_at: string
   auteur_id: string
   auteur: { id: string; full_name: string; avatar_url: string | null; promotion: string | null } | null
@@ -48,7 +51,7 @@ export default function FeedClient({
   posts: Post[]
   currentUserId: string | null
   currentUserName: string | null
-  onPublish: (contenu: string) => Promise<{ error?: string; success?: boolean }>
+  onPublish: (contenu: string, image_url?: string) => Promise<{ error?: string; success?: boolean }>
   onDelete: (id: string) => Promise<{ error?: string; success?: boolean }>
   onToggleLike: (id: string) => Promise<{ error?: string; success?: boolean }>
   onComment: (postId: string, contenu: string) => Promise<{ error?: string; success?: boolean }>
@@ -56,19 +59,46 @@ export default function FeedClient({
 }) {
   const router = useRouter()
   const [texte, setTexte] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [imagePreview, setImagePreview] = useState('')
+  const [uploading, setUploading] = useState(false)
   const [erreur, setErreur] = useState('')
   const [pending, startTransition] = useTransition()
   const [ouverts, setOuverts] = useState<Record<string, boolean>>({})
   const [commentTexte, setCommentTexte] = useState<Record<string, string>>({})
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  async function handleImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) { setErreur('Image trop lourde (max 5 Mo)'); return }
+    setUploading(true)
+    setErreur('')
+    const supabase = createClient()
+    const ext = file.name.split('.').pop()
+    const path = `feed/${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from('uploads').upload(path, file, { upsert: true })
+    if (error) { setErreur("Erreur upload : " + error.message); setUploading(false); return }
+    const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${path}`
+    setImageUrl(url)
+    setImagePreview(url)
+    setUploading(false)
+  }
+
+  function retirerImage() {
+    setImageUrl('')
+    setImagePreview('')
+    if (fileRef.current) fileRef.current.value = ''
+  }
 
   function publier() {
     const contenu = texte.trim()
-    if (!contenu) return
+    if (!contenu && !imageUrl) return
     setErreur('')
     startTransition(async () => {
-      const r = await onPublish(contenu)
+      const r = await onPublish(contenu, imageUrl || undefined)
       if (r?.error) setErreur(r.error)
-      else { setTexte(''); router.refresh() }
+      else { setTexte(''); retirerImage(); router.refresh() }
     })
   }
 
@@ -97,6 +127,7 @@ export default function FeedClient({
     <div className="max-w-2xl mx-auto py-8 px-4">
       <h1 className="text-2xl font-black text-violet-900 mb-6">Fil d&apos;actualité</h1>
 
+      {/* Formulaire de publication */}
       <div className="bg-white rounded-3xl border-2 border-stone-100 p-5 mb-6 shadow-sm">
         <div className="flex gap-3">
           <div className="w-10 h-10 rounded-full bg-violet-700 text-white flex items-center justify-center font-black text-sm shrink-0">
@@ -110,11 +141,32 @@ export default function FeedClient({
               rows={2}
               placeholder="Partagez quelque chose avec la communauté..."
             />
-            {erreur && <p className="text-xs text-rose-600 font-semibold mb-2">{erreur}</p>}
-            <div className="flex justify-end">
+
+            {/* Prévisualisation image */}
+            {imagePreview && (
+              <div className="relative mt-2 inline-block">
+                <Image src={imagePreview} alt="Aperçu" width={300} height={200}
+                  className="rounded-xl object-cover max-h-48 w-auto" />
+                <button onClick={retirerImage}
+                  className="absolute top-1 right-1 bg-stone-800/70 text-white rounded-full p-0.5 hover:bg-rose-600 transition-colors">
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+
+            {uploading && <p className="text-xs text-stone-400 mt-1">Upload en cours...</p>}
+            {erreur && <p className="text-xs text-rose-600 font-semibold mt-1">{erreur}</p>}
+
+            <div className="flex items-center justify-between mt-3">
+              <button onClick={() => fileRef.current?.click()} disabled={uploading}
+                className="inline-flex items-center gap-1.5 text-xs text-stone-400 hover:text-violet-700 font-semibold transition-colors">
+                <ImagePlus size={16} />
+                Photo
+              </button>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImage} />
               <button
                 onClick={publier}
-                disabled={pending || !texte.trim()}
+                disabled={pending || uploading || (!texte.trim() && !imageUrl)}
                 className="inline-flex items-center gap-2 bg-violet-700 text-white px-4 py-2 rounded-full text-sm font-black hover:bg-violet-600 transition-colors disabled:opacity-40"
               >
                 <Send size={14} />
@@ -135,7 +187,9 @@ export default function FeedClient({
             <div key={p.id} className="bg-white rounded-3xl border-2 border-stone-100 p-5 shadow-sm">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-amber-400 text-violet-900 flex items-center justify-center font-black text-sm shrink-0">
-                  {p.auteur ? initiales(p.auteur.full_name) : '?'}
+                  {p.auteur?.avatar_url
+                    ? <Image src={p.auteur.avatar_url} alt="" width={40} height={40} className="rounded-full object-cover w-10 h-10" />
+                    : p.auteur ? initiales(p.auteur.full_name) : '?'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
@@ -152,7 +206,18 @@ export default function FeedClient({
                       </button>
                     )}
                   </div>
-                  <p className="text-sm text-stone-700 mt-2 whitespace-pre-wrap break-words">{p.contenu}</p>
+
+                  {p.contenu && (
+                    <p className="text-sm text-stone-700 mt-2 whitespace-pre-wrap break-words">{p.contenu}</p>
+                  )}
+
+                  {/* Image du post */}
+                  {p.image_url && (
+                    <div className="mt-3 rounded-2xl overflow-hidden">
+                      <Image src={p.image_url} alt="Image du post" width={600} height={400}
+                        className="w-full object-cover max-h-80 rounded-2xl" />
+                    </div>
+                  )}
 
                   {/* Actions */}
                   <div className="flex items-center gap-4 mt-3 pt-3 border-t border-stone-100">
