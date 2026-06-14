@@ -4,7 +4,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function getTemoignages(valideSeulement = false) {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
   let q = supabase.from('temoignages').select('*').order('created_at', { ascending: false })
   if (valideSeulement) q = q.eq('valide', true)
   const { data, error } = await q
@@ -23,7 +23,7 @@ export async function createTemoignage(form: {
 }
 
 export async function validerTemoignage(id: string) {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
   const { error } = await supabase.from('temoignages').update({ valide: true }).eq('id', id)
   if (error) throw error
   revalidatePath('/temoignages')
@@ -31,7 +31,7 @@ export async function validerTemoignage(id: string) {
 }
 
 export async function depublierTemoignage(id: string) {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
   const { error } = await supabase.from('temoignages').update({ valide: false }).eq('id', id)
   if (error) throw error
   revalidatePath('/temoignages')
@@ -39,7 +39,7 @@ export async function depublierTemoignage(id: string) {
 }
 
 export async function deleteTemoignage(id: string) {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
   const { error } = await supabase.from('temoignages').delete().eq('id', id)
   if (error) throw error
   revalidatePath('/temoignages')
