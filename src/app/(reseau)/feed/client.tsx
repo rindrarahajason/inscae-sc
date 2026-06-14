@@ -27,6 +27,7 @@ export type Post = {
 }
 
 const CATEGORIES = [
+  { label: 'Présentation', emoji: '👋', color: 'bg-pink-100 text-pink-700' },
   { label: 'Témoignage', emoji: '🙏', color: 'bg-violet-100 text-violet-700' },
   { label: 'Prière', emoji: '✝️', color: 'bg-blue-100 text-blue-700' },
   { label: 'Encouragement', emoji: '💪', color: 'bg-amber-100 text-amber-700' },
