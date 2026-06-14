@@ -77,7 +77,12 @@ export default function ConnexionPage() {
             </button>
           </form>
 
-          <div className="mt-5 text-center">
+          <div className="mt-5 text-center space-y-2">
+            <p className="text-xs text-stone-400">
+              <Link href="/auth/mot-de-passe-oublie" className="text-violet-500 hover:text-violet-700 font-semibold">
+                Mot de passe oublié ?
+              </Link>
+            </p>
             <p className="text-xs text-stone-400">
               Pas encore membre ?{' '}
               <Link href="/auth/inscription" className="text-violet-700 font-bold hover:text-violet-900">
