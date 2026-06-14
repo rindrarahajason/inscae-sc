@@ -45,6 +45,7 @@ async function create(data: FormData) {
     phone:      data.get('phone') as string,
     profession: data.get('profession') as string,
     ville:      data.get('ville') as string,
+    avatar_url: data.get('avatar_url') as string,
   })
 }
 

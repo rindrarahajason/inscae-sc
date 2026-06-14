@@ -58,6 +58,7 @@ export async function creerMembre(form: {
   phone?: string
   profession?: string
   ville?: string
+  avatar_url?: string
 }) {
   const supabase = await createAdminClient()
 
@@ -77,6 +78,7 @@ export async function creerMembre(form: {
       phone:      form.phone      || null,
       profession: form.profession || null,
       ville:      form.ville      || null,
+      avatar_url: form.avatar_url || null,
     }).eq('id', data.user.id)
   }
 

@@ -3,6 +3,7 @@
 import React, { useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import ImageUpload from '@/components/ui/ImageUpload'
 
 type Item = {
   id: string
@@ -42,6 +43,7 @@ export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDe
   const [showCreate, setShowCreate] = useState(false)
   const [createError, setCreateError] = useState('')
   const [actionError, setActionError] = useState('')
+  const [newAvatarUrl, setNewAvatarUrl] = useState('')
   const [pending, startTransition] = useTransition()
 
   function sendStatus(id: string, status: string) {
@@ -130,7 +132,7 @@ export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDe
             ))}
           </div>
         </div>
-        <Button onClick={() => { setShowCreate(true); setCreateError('') }}>+ Ajouter un membre</Button>
+        <Button onClick={() => { setShowCreate(true); setCreateError(''); setNewAvatarUrl('') }}>+ Ajouter un membre</Button>
       </div>
 
       {showCreate && (
@@ -173,6 +175,13 @@ export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDe
             <div>
               <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Ville</label>
               <input name="ville" className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Photo de profil</label>
+              <ImageUpload folder="avatars" onUpload={url => setNewAvatarUrl(url)} currentUrl={newAvatarUrl || undefined} className="mb-2" />
+              <input name="avatar_url" type="hidden" value={newAvatarUrl} onChange={() => {}} />
+              <input placeholder="Ou coller une URL image..." value={newAvatarUrl} onChange={e => setNewAvatarUrl(e.target.value)}
+                className="w-full border-2 border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-violet-500 mt-2" />
             </div>
             <div className="sm:col-span-2 flex gap-3 pt-2">
               <Button type="submit" disabled={pending}>{pending ? 'Envoi...' : 'Créer et envoyer l\'invitation'}</Button>
