@@ -7,17 +7,32 @@ export const dynamic = 'force-dynamic'
 
 async function setRole(data: FormData) {
   'use server'
-  await updateMembreRole(data.get('id') as string, data.get('role') as string)
+  try {
+    await updateMembreRole(data.get('id') as string, data.get('role') as string)
+    return { success: true }
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 async function setStatus(data: FormData) {
   'use server'
-  await updateMembreStatus(data.get('id') as string, data.get('status') as string)
+  try {
+    await updateMembreStatus(data.get('id') as string, data.get('status') as string)
+    return { success: true }
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 async function remove(data: FormData) {
   'use server'
-  await deleteMembre(data.get('id') as string)
+  try {
+    await deleteMembre(data.get('id') as string)
+    return { success: true }
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 async function create(data: FormData) {

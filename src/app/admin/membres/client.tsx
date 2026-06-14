@@ -18,12 +18,14 @@ type Item = {
   created_at: string
 }
 
+type ActionResult = { error?: string; success?: boolean } | void
+
 type Props = {
   items: Item[]
-  onSetRole: (data: FormData) => Promise<void>
-  onSetStatus: (data: FormData) => Promise<void>
-  onDelete: (data: FormData) => Promise<void>
-  onCreate: (data: FormData) => Promise<{ error?: string; success?: boolean } | void>
+  onSetRole: (data: FormData) => Promise<ActionResult>
+  onSetStatus: (data: FormData) => Promise<ActionResult>
+  onDelete: (data: FormData) => Promise<ActionResult>
+  onCreate: (data: FormData) => Promise<ActionResult>
 }
 
 const statusVariant: Record<string, 'green' | 'yellow' | 'red'> = {
@@ -39,22 +41,35 @@ export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDe
   const [expanded, setExpanded] = useState<string | null>(null)
   const [showCreate, setShowCreate] = useState(false)
   const [createError, setCreateError] = useState('')
+  const [actionError, setActionError] = useState('')
   const [pending, startTransition] = useTransition()
 
   function sendStatus(id: string, status: string) {
+    setActionError('')
     const fd = new FormData(); fd.append('id', id); fd.append('status', status)
-    startTransition(() => onSetStatus(fd))
+    startTransition(async () => {
+      const result = await onSetStatus(fd)
+      if (result?.error) setActionError('Erreur statut: ' + result.error)
+    })
   }
 
   function sendRole(id: string, role: string) {
+    setActionError('')
     const fd = new FormData(); fd.append('id', id); fd.append('role', role)
-    startTransition(() => onSetRole(fd))
+    startTransition(async () => {
+      const result = await onSetRole(fd)
+      if (result?.error) setActionError('Erreur rôle: ' + result.error)
+    })
   }
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer ce membre définitivement ?')) return
+    setActionError('')
     const fd = new FormData(); fd.append('id', id)
-    startTransition(() => onDelete(fd))
+    startTransition(async () => {
+      const result = await onDelete(fd)
+      if (result?.error) setActionError('Erreur suppression: ' + result.error)
+    })
   }
 
   function handleCreate(e: React.FormEvent<HTMLFormElement>) {
@@ -91,6 +106,13 @@ export default function AdminMembresClient({ items, onSetRole, onSetStatus, onDe
             </p>
           </div>
           <button onClick={() => setFilter('pending')} className="text-xs text-amber-700 underline hover:text-amber-900 font-bold">Voir</button>
+        </div>
+      )}
+
+      {actionError && (
+        <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 mb-4 text-sm text-rose-700 font-semibold flex justify-between">
+          {actionError}
+          <button onClick={() => setActionError('')} className="ml-4 text-rose-400 hover:text-rose-700">✕</button>
         </div>
       )}
 
