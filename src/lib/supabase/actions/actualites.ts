@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { requireAdmin } from './_requireAdmin'
 import { revalidatePath } from 'next/cache'
 
@@ -22,7 +22,8 @@ export async function createActualite(form: {
   await requireAdmin()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const { error } = await supabase.from('actualites').insert({
+  const adminSupabase = await createAdminClient()
+  const { error } = await adminSupabase.from('actualites').insert({
     titre: form.titre?.trim().slice(0, 200),
     contenu: form.contenu?.trim().slice(0, 50000),
     extrait: form.extrait?.trim().slice(0, 500) || null,
@@ -40,7 +41,7 @@ export async function updateActualite(id: string, form: Partial<{
   titre: string; contenu: string; extrait: string; categorie: string; image_url: string; publie: boolean
 }>) {
   await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
   const { error } = await supabase.from('actualites').update(form).eq('id', id)
   if (error) throw error
   revalidatePath('/actualites')
@@ -49,7 +50,7 @@ export async function updateActualite(id: string, form: Partial<{
 
 export async function deleteActualite(id: string) {
   await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
   const { error } = await supabase.from('actualites').delete().eq('id', id)
   if (error) throw error
   revalidatePath('/actualites')
