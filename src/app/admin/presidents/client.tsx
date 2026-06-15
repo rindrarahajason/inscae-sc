@@ -15,11 +15,13 @@ type Item = {
   photo_url?: string | null
 }
 
+type ActionResult = { success?: boolean; error?: string }
+
 type Props = {
   items: Item[]
-  onCreate: (data: FormData) => Promise<void>
-  onUpdate: (data: FormData) => Promise<void>
-  onDelete: (data: FormData) => Promise<void>
+  onCreate: (data: FormData) => Promise<ActionResult>
+  onUpdate: (data: FormData) => Promise<ActionResult>
+  onDelete: (data: FormData) => Promise<ActionResult>
 }
 
 function annee(d: string | null | undefined) {
@@ -31,6 +33,7 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
   const [showForm, setShowForm] = useState(false)
   const [editItem, setEditItem] = useState<Item | null>(null)
   const [photoUrl, setPhotoUrl] = useState('')
+  const [error, setError] = useState('')
   const [pending, startTransition] = useTransition()
 
   function openNew() { setEditItem(null); setPhotoUrl(''); setShowForm(true) }
@@ -38,18 +41,24 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setError('')
     const fd = new FormData(e.currentTarget)
     startTransition(async () => {
-      if (editItem) { fd.append('id', editItem.id); await onUpdate(fd) }
-      else await onCreate(fd)
-      setShowForm(false)
+      const r = editItem
+        ? (fd.append('id', editItem.id), await onUpdate(fd))
+        : await onCreate(fd)
+      if (r.error) setError(r.error)
+      else setShowForm(false)
     })
   }
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer ce président ?')) return
     const fd = new FormData(); fd.append('id', id)
-    startTransition(async () => { await onDelete(fd) })
+    startTransition(async () => {
+      const r = await onDelete(fd)
+      if (r.error) setError(r.error)
+    })
   }
 
   return (
@@ -61,6 +70,7 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
       {showForm && (
         <div className="bg-white rounded-2xl border-2 border-stone-100 p-6 mb-6">
           <h2 className="font-black text-violet-900 mb-5">{editItem ? 'Modifier' : 'Nouveau président'}</h2>
+          {error && <div className="bg-rose-50 border-2 border-rose-200 rounded-xl p-3 mb-4 text-sm text-rose-700 font-semibold">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="md:col-span-3">

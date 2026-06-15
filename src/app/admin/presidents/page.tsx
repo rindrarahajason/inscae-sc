@@ -7,31 +7,46 @@ export const dynamic = 'force-dynamic'
 
 async function create(data: FormData) {
   'use server'
-  await createPresident({
-    full_name:    data.get('full_name') as string,
-    debut_mandat: data.get('debut_mandat') as string,
-    fin_mandat:   data.get('fin_mandat') as string || undefined,
-    bio:          data.get('bio') as string || undefined,
-    photo_url:    data.get('photo_url') as string || undefined,
-  })
+  try {
+    await createPresident({
+      full_name:    data.get('full_name') as string,
+      debut_mandat: data.get('debut_mandat') as string,
+      fin_mandat:   data.get('fin_mandat') as string || undefined,
+      bio:          data.get('bio') as string || undefined,
+      photo_url:    data.get('photo_url') as string || undefined,
+    })
+    return { success: true }
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 async function update(data: FormData) {
   'use server'
-  const id = data.get('id') as string
-  await updatePresident(id, {
-    full_name:    data.get('full_name') as string,
-    debut_mandat: data.get('debut_mandat') as string,
-    fin_mandat:   data.get('fin_mandat') as string || null,
-    bio:          data.get('bio') as string || null,
-    photo_url:    data.get('photo_url') as string || null,
-    actuel:       data.get('actuel') === 'on',
-  })
+  try {
+    const id = data.get('id') as string
+    await updatePresident(id, {
+      full_name:    data.get('full_name') as string,
+      debut_mandat: data.get('debut_mandat') as string,
+      fin_mandat:   data.get('fin_mandat') as string || null,
+      bio:          data.get('bio') as string || null,
+      photo_url:    data.get('photo_url') as string || null,
+      actuel:       data.get('actuel') === 'on',
+    })
+    return { success: true }
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 async function remove(data: FormData) {
   'use server'
-  await deletePresident(data.get('id') as string)
+  try {
+    await deletePresident(data.get('id') as string)
+    return { success: true }
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 export default async function AdminPresidentsPage() {
