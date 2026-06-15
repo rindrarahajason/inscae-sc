@@ -16,7 +16,6 @@ async function create(data: FormData) {
     await createPresident({
       full_name:    data.get('full_name') as string,
       debut_mandat: yearToDate(data.get('debut_mandat') as string) as string,
-      fin_mandat:   yearToDate(data.get('fin_mandat') as string),
       bio:          data.get('bio') as string || undefined,
       photo_url:    data.get('photo_url') as string || undefined,
     })
@@ -33,7 +32,6 @@ async function update(data: FormData) {
     await updatePresident(id, {
       full_name:    data.get('full_name') as string,
       debut_mandat: yearToDate(data.get('debut_mandat') as string),
-      fin_mandat:   yearToDate(data.get('fin_mandat') as string) ?? null,
       bio:          data.get('bio') as string || null,
       photo_url:    data.get('photo_url') as string || null,
       actuel:       data.get('actuel') === 'on',

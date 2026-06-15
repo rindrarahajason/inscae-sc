@@ -85,13 +85,6 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
                   placeholder="ex: 2020"
                   className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
               </div>
-              <div>
-                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Fin mandat (année)</label>
-                <input name="fin_mandat" type="number" min="1999" max="2099"
-                  defaultValue={editItem?.fin_mandat ? new Date(editItem.fin_mandat).getFullYear() : ''}
-                  placeholder="Laisser vide si actuel"
-                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
-              </div>
               <div className="flex items-end pb-2">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" name="actuel" defaultChecked={editItem?.actuel ?? false} className="w-4 h-4 accent-violet-700" />
@@ -136,7 +129,7 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
                 <td className="px-4 py-3 text-stone-400 text-xs">{i + 1}</td>
                 <td className="px-4 py-3 font-bold text-stone-800">{item.full_name}</td>
                 <td className="px-4 py-3 text-stone-500 text-xs">
-                  {annee(item.debut_mandat)} – {item.fin_mandat ? annee(item.fin_mandat) : 'présent'}
+                  {annee(item.debut_mandat)}
                 </td>
                 <td className="px-4 py-3">
                   {item.actuel && <Badge variant="blue">Actuel</Badge>}

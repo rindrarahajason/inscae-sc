@@ -151,7 +151,7 @@ export default async function HistoirePage() {
               </div>
               <p className="text-xs font-bold text-stone-800 leading-tight">{p.full_name}</p>
               <p className="text-[11px] text-violet-500 font-semibold mt-0.5">
-                {annee(p.debut_mandat)} – {p.fin_mandat ? annee(p.fin_mandat) : 'présent'}
+                {annee(p.debut_mandat)}
               </p>
               {p.bio && (
                 <p className="text-[10px] text-stone-400 mt-1 leading-tight opacity-0 group-hover:opacity-100 transition-opacity">{p.bio}</p>
