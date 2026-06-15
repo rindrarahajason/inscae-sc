@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Users, FileText, Calendar,
-  MessageSquare, ShoppingBag, Video, Mail, Trophy
+  MessageSquare, ShoppingBag, Video, Mail, Trophy, Images
 } from 'lucide-react'
 import SignOutButton from '@/components/admin/SignOutButton'
 
@@ -16,6 +16,7 @@ const navItems = [
   { href: '/admin/activites',    label: 'Activités',     icon: Calendar },
   { href: '/admin/temoignages',  label: 'Témoignages',   icon: MessageSquare },
   { href: '/admin/presidents',   label: 'Présidents',    icon: Trophy },
+  { href: '/admin/histoire',     label: 'Galerie',       icon: Images },
   { href: '/admin/goodies',      label: 'Goodies',       icon: ShoppingBag },
   { href: '/admin/contenus',     label: 'Vidéos',        icon: Video },
 ]

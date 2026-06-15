@@ -1,5 +1,7 @@
 import { getPresidents } from '@/lib/supabase/actions/presidents'
+import { getPhotosHistoire } from '@/lib/supabase/actions/photos_histoire'
 import { safeFetch } from '@/lib/supabase/safe-fetch'
+import CarouselHistoire from '@/components/public/CarouselHistoire'
 
 export const metadata = { title: 'Histoire — INSCAE Section Chrétienne' }
 export const revalidate = 3600
@@ -7,13 +9,13 @@ export const revalidate = 3600
 const AVATARS = ['1','5','3','8','11','9','15','20','12','33','47','44']
 
 const jalons = [
-  { annee: '1995', emoji: '🌱', titre: 'Fondation', desc: '12 étudiants créent l\'INSCAE Section Chrétienne.' },
-  { annee: '1998', emoji: '⛪', titre: 'Premier culte', desc: 'Culte interpromotionnel avec 80+ participants.' },
-  { annee: '2003', emoji: '🏛️', titre: 'Reconnaissance', desc: 'Reconnue officiellement par la direction INSCAE.' },
-  { annee: '2008', emoji: '⛺', titre: 'Première retraite', desc: 'Retraite spirituelle annuelle à Antsirabe.' },
-  { annee: '2015', emoji: '🌐', titre: 'Réseau anciens', desc: 'Lancement du réseau des anciens membres (+200).' },
+  { annee: '1999', emoji: '🌱', titre: 'Fondation', desc: 'Des étudiants passionnés créent l\'INSCAE Section Chrétienne.' },
+  { annee: '2003', emoji: '⛪', titre: 'Premier culte', desc: 'Culte interpromotionnel avec de nombreux participants.' },
+  { annee: '2008', emoji: '🏛️', titre: 'Reconnaissance', desc: 'Reconnue officiellement par la direction INSCAE.' },
+  { annee: '2012', emoji: '⛺', titre: 'Première retraite', desc: 'Retraite spirituelle annuelle à Antsirabe.' },
+  { annee: '2015', emoji: '🌐', titre: 'Réseau anciens', desc: 'Lancement du réseau des anciens membres.' },
   { annee: '2020', emoji: '💻', titre: 'Transition numérique', desc: 'Cultes en ligne durant la pandémie COVID-19.' },
-  { annee: '2024', emoji: '🚀', titre: 'Nouvelle vision', desc: 'Plan stratégique 2024-2030 pour l\'impact communautaire.' },
+  { annee: '2025', emoji: '🚀', titre: 'Nouvelle plateforme', desc: 'Lancement de l\'espace membres en ligne pour connecter la communauté.' },
 ]
 
 function annee(d: string | null) {
@@ -22,7 +24,10 @@ function annee(d: string | null) {
 }
 
 export default async function HistoirePage() {
-  const presidents = await safeFetch(() => getPresidents(), [] as Awaited<ReturnType<typeof getPresidents>>)
+  const [presidents, photos] = await Promise.all([
+    safeFetch(() => getPresidents(), [] as Awaited<ReturnType<typeof getPresidents>>),
+    safeFetch(() => getPhotosHistoire(), [] as Awaited<ReturnType<typeof getPhotosHistoire>>),
+  ])
   const data = presidents
 
   return (
@@ -37,7 +42,7 @@ export default async function HistoirePage() {
             Une foi qui traverse<br /><span className="text-amber-400">les générations</span>
           </h1>
           <p className="text-xl text-violet-200 max-w-2xl mx-auto font-medium">
-            Depuis 1995, l&apos;INSCAE SC unit les étudiants autour des valeurs de la foi chrétienne
+            Depuis 1999, l&apos;INSCAE SC unit les étudiants autour des valeurs de la foi chrétienne
             et de l&apos;excellence académique.
           </p>
         </div>
@@ -48,11 +53,11 @@ export default async function HistoirePage() {
         <div className="grid md:grid-cols-2 gap-10 items-start mb-14">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-amber-600 mb-3">Les origines</p>
-            <h2 className="text-3xl font-black text-violet-900 mb-5">1995 : la graine est plantée</h2>
+            <h2 className="text-3xl font-black text-violet-900 mb-5">1999 : la graine est plantée</h2>
             <p className="text-stone-600 leading-relaxed mb-4">
-              Un groupe de 12 étudiants passionnés fonde l&apos;INSCAE Section Chrétienne dans les couloirs
-              de l&apos;Institut National des Sciences Comptables. Leur rêve : vivre une foi authentique
-              au cœur de l&apos;université.
+              Des étudiants passionnés fondent l&apos;INSCAE Section Chrétienne dans les couloirs
+              de l&apos;Institut National des Sciences Comptables et de l&apos;Administration des Entreprises.
+              Leur rêve : vivre une foi authentique au cœur de l&apos;université.
             </p>
             <p className="text-stone-600 leading-relaxed mb-5">
               La devise qui guide chaque génération depuis les origines :
@@ -92,7 +97,7 @@ export default async function HistoirePage() {
       <section className="bg-violet-900 py-16 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">Depuis 1995</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">Depuis 1999</p>
             <h2 className="text-3xl font-black text-white">Les grandes dates</h2>
           </div>
           <div className="space-y-4">
@@ -114,6 +119,9 @@ export default async function HistoirePage() {
           </div>
         </div>
       </section>
+
+      {/* Carousel photos */}
+      {photos.length > 0 && <CarouselHistoire photos={photos} />}
 
       {/* Présidents */}
       <section className="max-w-6xl mx-auto px-4 py-16">
