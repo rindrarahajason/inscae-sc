@@ -1,4 +1,14 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Tiptap editor styles */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
 
 :root {
   --violet: #5B21B6;

@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import ImageUpload from '@/components/ui/ImageUpload'
+import RichEditor from '@/components/ui/RichEditor'
 
 type Item = {
   id: string
@@ -38,19 +39,23 @@ export default function AdminActivitesClient({ items, onCreate, onUpdate, onDele
   const [editItem, setEditItem] = useState<Item | null>(null)
   const [form, setForm] = useState(emptyForm)
   const [imageUrl, setImageUrl] = useState('')
+  const [description, setDescription] = useState('')
   const [pending, startTransition] = useTransition()
 
-  function openNew() { setEditItem(null); setForm(emptyForm); setImageUrl(''); setShowForm(true) }
+  function openNew() { setEditItem(null); setForm(emptyForm); setImageUrl(''); setDescription(''); setShowForm(true) }
   function openEdit(item: Item) {
     setEditItem(item)
     setForm({ titre: item.titre, lieu: item.lieu ?? '', date_debut: item.date_debut, date_fin: '', statut: item.statut, categorie: item.categorie ?? '', description: item.description ?? '', image_url: item.image_url ?? '' })
     setImageUrl(item.image_url ?? '')
+    setDescription(item.description ?? '')
     setShowForm(true)
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const fd = new FormData(e.currentTarget)
+    fd.set('description', description)
+    if (imageUrl) fd.set('image_url', imageUrl)
     startTransition(async () => {
       if (editItem) { fd.append('id', editItem.id); await onUpdate(fd) }
       else await onCreate(fd)
@@ -116,8 +121,7 @@ export default function AdminActivitesClient({ items, onCreate, onUpdate, onDele
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Description</label>
-                <textarea name="description" rows={3} defaultValue={form.description}
-                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500 resize-none" />
+                <RichEditor value={description} onChange={setDescription} placeholder="Décrivez l'activité..." />
               </div>
             </div>
             <div className="flex gap-3">

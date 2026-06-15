@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import ImageUpload from '@/components/ui/ImageUpload'
+import RichEditor from '@/components/ui/RichEditor'
 
 type Item = {
   id: string
@@ -33,12 +34,14 @@ export default function AdminActualitesClient({ items, onCreate, onUpdate, onDel
   const [editItem, setEditItem] = useState<Item | null>(null)
   const [form, setForm] = useState(emptyForm)
   const [imageUrl, setImageUrl] = useState('')
+  const [contenu, setContenu] = useState('')
   const [pending, startTransition] = useTransition()
 
   function openNew() {
     setEditItem(null)
     setForm(emptyForm)
     setImageUrl('')
+    setContenu('')
     setShowForm(true)
   }
 
@@ -46,12 +49,15 @@ export default function AdminActualitesClient({ items, onCreate, onUpdate, onDel
     setEditItem(item)
     setForm({ titre: item.titre, contenu: item.contenu, extrait: item.extrait, categorie: item.categorie, image_url: '', publie: item.publie })
     setImageUrl('')
+    setContenu(item.contenu)
     setShowForm(true)
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const fd = new FormData(e.currentTarget)
+    fd.set('contenu', contenu)
+    if (imageUrl) fd.set('image_url', imageUrl)
     startTransition(async () => {
       if (editItem) {
         fd.append('id', editItem.id)
@@ -115,8 +121,7 @@ export default function AdminActualitesClient({ items, onCreate, onUpdate, onDel
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-bold text-stone-600 mb-1 uppercase tracking-wide">Contenu</label>
-                <textarea name="contenu" rows={6} defaultValue={form.contenu}
-                  className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500 resize-none" />
+                <RichEditor value={contenu} onChange={setContenu} placeholder="Rédigez votre article..." />
               </div>
               <div className="flex items-center gap-2">
                 <input type="checkbox" name="publie" id="publie" defaultChecked={form.publie} className="w-4 h-4 accent-violet-700" />
