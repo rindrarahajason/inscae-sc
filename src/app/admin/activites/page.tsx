@@ -12,7 +12,6 @@ async function create(data: FormData) {
     description: data.get('description') as string,
     lieu:        data.get('lieu') as string || undefined,
     date_debut:  data.get('date_debut') as string,
-    date_fin:    data.get('date_fin') as string || undefined,
     statut:      data.get('statut') as string,
     image_url:   data.get('image_url') as string || undefined,
   })
@@ -26,7 +25,6 @@ async function update(data: FormData) {
     description: data.get('description') as string,
     lieu:        data.get('lieu') as string || undefined,
     date_debut:  data.get('date_debut') as string,
-    date_fin:    data.get('date_fin') as string || undefined,
     statut:      data.get('statut') as string,
     image_url:   data.get('image_url') as string || undefined,
   })

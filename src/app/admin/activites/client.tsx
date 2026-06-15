@@ -31,7 +31,15 @@ const statutVariant: Record<string, 'blue' | 'green' | 'gray'> = {
 const statutLabel: Record<string, string> = {
   a_venir: 'À venir', en_cours: 'En cours', termine: 'Terminé',
 }
-const CATEGORIES = ['Spirituel', 'Culte', 'Formation', 'Social', 'Événement']
+const CATEGORIES = [
+  'Culte œcuménique',
+  'Séance hebdomadaire',
+  'Sortie de fin de session',
+  'Retrouvailles ISC',
+  'Veillée de prière',
+  'Camp évangélisation',
+  'Cellule de prière',
+]
 const emptyForm = { titre: '', lieu: '', date_debut: '', date_fin: '', statut: 'a_venir', categorie: '', description: '', image_url: '' }
 
 export default function AdminActivitesClient({ items, onCreate, onUpdate, onDelete }: Props) {

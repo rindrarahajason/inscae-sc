@@ -39,11 +39,13 @@ export async function POST(request: NextRequest) {
 
   const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL ?? request.nextUrl.origin}/auth/nouveau-mot-de-passe`
 
-  const { error } = await supabase.auth.admin.generateLink({
-    type: 'recovery',
-    email,
-    options: { redirectTo },
-  })
+  // Use anon client with resetPasswordForEmail to actually send the email
+  const anonSupabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  )
+
+  const { error } = await anonSupabase.auth.resetPasswordForEmail(email, { redirectTo })
 
   if (error) console.error('reset-password error:', error.message)
 
