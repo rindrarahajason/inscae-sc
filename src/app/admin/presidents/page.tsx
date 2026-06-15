@@ -5,19 +5,24 @@ import AdminPresidentsClient from './client'
 
 export const dynamic = 'force-dynamic'
 
+function yearToDate(year: string | null): string | undefined {
+  if (!year) return undefined
+  return `${year}-01-01`
+}
+
 async function create(data: FormData) {
   'use server'
   try {
     await createPresident({
       full_name:    data.get('full_name') as string,
-      debut_mandat: data.get('debut_mandat') as string,
-      fin_mandat:   data.get('fin_mandat') as string || undefined,
+      debut_mandat: yearToDate(data.get('debut_mandat') as string) as string,
+      fin_mandat:   yearToDate(data.get('fin_mandat') as string),
       bio:          data.get('bio') as string || undefined,
       photo_url:    data.get('photo_url') as string || undefined,
     })
     return { success: true }
   } catch (e: unknown) {
-    return { error: e instanceof Error ? e.message : String(e) }
+    return { error: e instanceof Error ? e.message : (e as { message?: string })?.message ?? JSON.stringify(e) }
   }
 }
 
@@ -27,15 +32,15 @@ async function update(data: FormData) {
     const id = data.get('id') as string
     await updatePresident(id, {
       full_name:    data.get('full_name') as string,
-      debut_mandat: data.get('debut_mandat') as string,
-      fin_mandat:   data.get('fin_mandat') as string || null,
+      debut_mandat: yearToDate(data.get('debut_mandat') as string),
+      fin_mandat:   yearToDate(data.get('fin_mandat') as string) ?? null,
       bio:          data.get('bio') as string || null,
       photo_url:    data.get('photo_url') as string || null,
       actuel:       data.get('actuel') === 'on',
     })
     return { success: true }
   } catch (e: unknown) {
-    return { error: e instanceof Error ? e.message : String(e) }
+    return { error: e instanceof Error ? e.message : (e as { message?: string })?.message ?? JSON.stringify(e) }
   }
 }
 
@@ -45,7 +50,7 @@ async function remove(data: FormData) {
     await deletePresident(data.get('id') as string)
     return { success: true }
   } catch (e: unknown) {
-    return { error: e instanceof Error ? e.message : String(e) }
+    return { error: e instanceof Error ? e.message : (e as { message?: string })?.message ?? JSON.stringify(e) }
   }
 }
 

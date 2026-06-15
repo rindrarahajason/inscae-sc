@@ -79,13 +79,17 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
                   className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Début mandat *</label>
-                <input name="debut_mandat" required defaultValue={editItem?.debut_mandat ?? ''} placeholder="ex: 2020-01-01"
+                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Début mandat (année) *</label>
+                <input name="debut_mandat" required type="number" min="1999" max="2099"
+                  defaultValue={editItem?.debut_mandat ? new Date(editItem.debut_mandat).getFullYear() : ''}
+                  placeholder="ex: 2020"
                   className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Fin mandat</label>
-                <input name="fin_mandat" defaultValue={editItem?.fin_mandat ?? ''} placeholder="Laisser vide si actuel"
+                <label className="block text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Fin mandat (année)</label>
+                <input name="fin_mandat" type="number" min="1999" max="2099"
+                  defaultValue={editItem?.fin_mandat ? new Date(editItem.fin_mandat).getFullYear() : ''}
+                  placeholder="Laisser vide si actuel"
                   className="w-full border-2 border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-violet-500" />
               </div>
               <div className="flex items-end pb-2">
