@@ -49,7 +49,7 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
   function handleDelete(id: string) {
     if (!confirm('Supprimer ce président ?')) return
     const fd = new FormData(); fd.append('id', id)
-    startTransition(() => onDelete(fd))
+    startTransition(async () => { await onDelete(fd) })
   }
 
   return (
