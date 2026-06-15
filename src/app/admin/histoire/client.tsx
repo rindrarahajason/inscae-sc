@@ -47,7 +47,7 @@ export default function AdminHistoireClient({ photos, onAdd, onDelete }: Props) 
   function handleDelete(id: string) {
     if (!confirm('Supprimer cette photo ?')) return
     const fd = new FormData(); fd.append('id', id)
-    startTransition(() => onDelete(fd))
+    startTransition(async () => { await onDelete(fd) })
   }
 
   const filtered = filterAnnee === 'all' ? photos : photos.filter(p => p.annee === filterAnnee)
