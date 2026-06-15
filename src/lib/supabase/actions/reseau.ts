@@ -48,11 +48,22 @@ export async function getPosts() {
   })
 }
 
+const CATEGORIES_ALLOWED = ['Présentation', 'Témoignage', 'Prière', 'Encouragement', 'Annonce', 'Événement', 'Discussion']
+
 export async function createPost(contenu: string, image_url?: string, categorie?: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non connecté' }
-  const { error } = await supabase.from('posts').insert({ auteur_id: user.id, contenu, image_url: image_url || null, categorie: categorie || null })
+  if (contenu && contenu.length > 5000) return { error: 'Message trop long (max 5000 caractères)' }
+  if (!contenu?.trim() && !image_url) return { error: 'Contenu vide' }
+  const cat = categorie && CATEGORIES_ALLOWED.includes(categorie) ? categorie : null
+  const safeImageUrl = image_url?.startsWith('https://') ? image_url : null
+  const { error } = await supabase.from('posts').insert({
+    auteur_id: user.id,
+    contenu: contenu?.trim().slice(0, 5000) || '',
+    image_url: safeImageUrl,
+    categorie: cat,
+  })
   if (error) return { error: error.message }
   revalidatePath('/feed')
   return { success: true }

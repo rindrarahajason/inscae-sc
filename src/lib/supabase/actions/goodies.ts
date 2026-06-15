@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from './_requireAdmin'
 import { revalidatePath } from 'next/cache'
 
 export async function getGoodies(actifSeulement = false) {
@@ -16,6 +17,7 @@ export async function createGoodie(form: {
   nom: string; description?: string; prix: number; stock: number
   image_url?: string; stripe_price_id?: string; actif: boolean
 }) {
+  await requireAdmin()
   const supabase = await createClient()
   const { error } = await supabase.from('goodies').insert({
     ...form,
@@ -27,6 +29,7 @@ export async function createGoodie(form: {
 }
 
 export async function updateGoodie(id: string, form: Record<string, unknown>) {
+  await requireAdmin()
   const supabase = await createClient()
   const { error } = await supabase.from('goodies').update(form).eq('id', id)
   if (error) throw error
@@ -35,6 +38,7 @@ export async function updateGoodie(id: string, form: Record<string, unknown>) {
 }
 
 export async function deleteGoodie(id: string) {
+  await requireAdmin()
   const supabase = await createClient()
   const { error } = await supabase.from('goodies').delete().eq('id', id)
   if (error) throw error

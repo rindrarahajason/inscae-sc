@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from './_requireAdmin'
 import { revalidatePath } from 'next/cache'
 
 export async function getPresidents() {
@@ -14,16 +15,22 @@ export async function getPresidents() {
 }
 
 export async function createPresident(form: {
-  full_name: string; debut_mandat: string; fin_mandat?: string; bio?: string; photo_url?: string
+  full_name: string; debut_mandat: string; fin_mandat?: string; bio?: string; photo_url?: string; actuel?: boolean
 }) {
+  await requireAdmin()
   const supabase = await createClient()
-  const { error } = await supabase.from('presidents').insert(form)
+  const { error } = await supabase.from('presidents').insert({
+    ...form,
+    full_name: form.full_name?.trim().slice(0, 100),
+    photo_url: form.photo_url?.startsWith('https://') ? form.photo_url : null,
+  })
   if (error) throw error
   revalidatePath('/histoire')
   revalidatePath('/admin/presidents')
 }
 
 export async function updatePresident(id: string, form: Record<string, unknown>) {
+  await requireAdmin()
   const supabase = await createClient()
   const { error } = await supabase.from('presidents').update(form).eq('id', id)
   if (error) throw error
@@ -32,6 +39,7 @@ export async function updatePresident(id: string, form: Record<string, unknown>)
 }
 
 export async function deletePresident(id: string) {
+  await requireAdmin()
   const supabase = await createClient()
   const { error } = await supabase.from('presidents').delete().eq('id', id)
   if (error) throw error
