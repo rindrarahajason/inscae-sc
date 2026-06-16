@@ -1,6 +1,25 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@theme {
+  --color-violet-50:  #f0f8f3;
+  --color-violet-100: #d6eedd;
+  --color-violet-200: #aed8bc;
+  --color-violet-300: #7fc09a;
+  --color-violet-400: #4da872;
+  --color-violet-500: #2d8c47;
+  --color-violet-600: #226b37;
+  --color-violet-700: #1a5c2a;
+  --color-violet-800: #134520;
+  --color-violet-900: #0a2e14;
+
+  --color-amber-300:  #f0c040;
+  --color-amber-400:  #d4a820;
+  --color-amber-500:  #b88c14;
+  --color-amber-600:  #9c7410;
+  --color-amber-700:  #7a5a0c;
+}
+
 /* Tiptap editor styles */
 .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
@@ -11,13 +30,13 @@
 }
 
 :root {
-  --violet: #5B21B6;
-  --violet-light: #7C3AED;
-  --amber: #F59E0B;
-  --amber-light: #FCD34D;
-  --coral: #F43F5E;
-  --cream: #FFFBF0;
-  --charcoal: #1C1917;
+  --violet: #1a5c2a;
+  --violet-light: #2d8c47;
+  --amber: #d4a820;
+  --amber-light: #f0c040;
+  --coral: #c0392b;
+  --cream: #f5f0e8;
+  --charcoal: #1c1c1c;
 }
 
 * {
@@ -42,7 +61,7 @@ body {
 }
 .card-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px -8px rgba(91, 33, 182, 0.18);
+  box-shadow: 0 12px 40px -8px rgba(26, 92, 42, 0.18);
 }
 
 /* Underline fun */
@@ -78,4 +97,4 @@ body {
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f5f5f5; }
-::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #7fc09a; border-radius: 3px; }

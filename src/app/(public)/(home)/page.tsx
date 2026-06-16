@@ -15,13 +15,13 @@ export default async function HomePage() {
   const temoignagesHome = temoignages.slice(0, 3)
 
   return (
-    <div className="bg-[#FFFBF0]">
+    <div className="bg-[#f5f0e8]">
 
       {/* ── HERO ─────────────────────────────────────── */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center">
-        <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-violet-200 rounded-full opacity-40 blur-3xl -z-0" />
-        <div className="absolute -bottom-20 left-20 w-80 h-80 bg-amber-200 rounded-full opacity-50 blur-3xl -z-0" />
-        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-rose-200 rounded-full opacity-30 blur-2xl -z-0" />
+        <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-violet-200 rounded-full opacity-30 blur-3xl -z-0" />
+        <div className="absolute -bottom-20 left-20 w-80 h-80 bg-amber-200 rounded-full opacity-40 blur-3xl -z-0" />
+        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-violet-300 rounded-full opacity-20 blur-2xl -z-0" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -77,8 +77,8 @@ export default async function HomePage() {
                 <span className="text-8xl">✝</span>
               </div>
               <div className="absolute -bottom-4 -left-4 bg-amber-400 rounded-2xl p-4 shadow-xl -rotate-2">
-                <p className="text-violet-900 font-black text-sm">✝ Chaque vendredi</p>
-                <p className="text-violet-700 text-xs font-semibold">Culte hebdomadaire</p>
+                <p className="text-violet-900 font-black text-sm">✝ Chaque mercredi</p>
+                <p className="text-violet-700 text-xs font-semibold">Séance hebdomadaire</p>
               </div>
             </div>
           </div>

@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'La communauté chrétienne des étudiants et anciens de l\'INSCAE Madagascar',
     start_url: '/',
     display: 'standalone',
-    background_color: '#FFFBF0',
-    theme_color: '#5B21B6',
+    background_color: '#f5f0e8',
+    theme_color: '#1a5c2a',
     orientation: 'portrait',
     categories: ['education', 'social', 'lifestyle'],
     icons: [
