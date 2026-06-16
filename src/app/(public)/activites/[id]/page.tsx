@@ -44,9 +44,10 @@ export default async function ActivitePage({ params }: { params: Promise<{ id: s
         </div>
 
         {activite.description && (
-          <div className="text-stone-700 leading-relaxed whitespace-pre-wrap text-base">
-            {activite.description}
-          </div>
+          <div
+            className="prose prose-stone prose-lg max-w-none prose-headings:font-black prose-headings:text-violet-900 prose-a:text-violet-700 prose-strong:text-stone-800 prose-img:rounded-2xl prose-img:shadow-md prose-li:text-stone-600"
+            dangerouslySetInnerHTML={{ __html: activite.description }}
+          />
         )}
       </div>
     </div>
