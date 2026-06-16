@@ -161,11 +161,8 @@ const ACTIVITES = [
 export async function GET() {
   const supabase = await createAdminClient()
 
-  // Check if activities already exist
-  const { data: existing } = await supabase.from('activites').select('id').limit(1)
-  if (existing && existing.length > 0) {
-    return NextResponse.json({ message: 'Activités déjà présentes, seed ignoré.' })
-  }
+  // Delete all existing activities then re-insert
+  await supabase.from('activites').delete().neq('id', '00000000-0000-0000-0000-000000000000')
 
   const { error } = await supabase.from('activites').insert(ACTIVITES)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
