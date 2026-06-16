@@ -15,7 +15,7 @@ export default async function HomePage() {
   const temoignagesHome = temoignages.slice(0, 3)
 
   return (
-    <div className="bg-[#f5f0e8]">
+    <div className="bg-[#f0f5ff]">
 
       {/* ── HERO ─────────────────────────────────────── */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center">
