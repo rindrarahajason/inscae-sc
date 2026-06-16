@@ -64,7 +64,9 @@ export default async function ActivitesPage() {
                 </div>
                 <div className="p-5">
                   <h3 className="font-black text-stone-800 text-lg mb-2 leading-tight">{a.titre}</h3>
-                  <p className="text-stone-500 text-sm leading-relaxed line-clamp-3 mb-4">{a.description}</p>
+                  <p className="text-stone-500 text-sm leading-relaxed line-clamp-3 mb-4">
+                    {a.description?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()}
+                  </p>
                   <div className="space-y-1">
                     <p className="text-xs font-semibold text-stone-500 flex items-center gap-1.5">
                       <span className="text-violet-400">📅</span> {a.date_debut}
