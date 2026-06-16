@@ -43,7 +43,7 @@ export default async function HomePage() {
 
             <p className="text-lg text-stone-600 leading-relaxed mb-8 max-w-lg font-medium">
               L&apos;INSCAE Section Chrétienne unit les étudiants et anciens de l&apos;INSCAE
-              autour de <strong className="text-violet-700">Foi · Excellence · Service</strong> depuis 1995.
+              autour de <strong className="text-violet-700">Foi · Excellence · Service</strong> depuis 1999.
             </p>
 
             <div className="flex flex-wrap gap-3">
@@ -59,10 +59,9 @@ export default async function HomePage() {
 
             <div className="flex flex-wrap gap-6 mt-10">
               {[
-                { num: '1995', label: 'Fondée en' },
-                { num: '30+', label: 'Ans de foi' },
-                { num: '12', label: 'Présidents' },
-                { num: '300+', label: 'Membres & anciens' },
+                { num: '1999', label: 'Fondée en' },
+                { num: '27+', label: 'Ans de foi' },
+                { num: '1200+', label: 'Membres & anciens' },
               ].map(s => (
                 <div key={s.label}>
                   <p className="text-3xl font-black text-violet-700">{s.num}</p>
