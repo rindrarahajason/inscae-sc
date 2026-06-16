@@ -12,8 +12,8 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: 'portrait',
     categories: ['education', 'social', 'lifestyle'],
     icons: [
-      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
     ],
     shortcuts: [
       { name: 'Fil d\'actualité', short_name: 'Feed', url: '/feed', description: 'Espace membres' },
