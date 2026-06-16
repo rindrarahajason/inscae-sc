@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import PwaRegister from '@/components/PwaRegister'
+import PwaInstallBanner from '@/components/PwaInstallBanner'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full flex flex-col antialiased">
         <PwaRegister />
+        <PwaInstallBanner />
         {children}
       </body>
     </html>
