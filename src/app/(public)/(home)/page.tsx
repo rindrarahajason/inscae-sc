@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getActivites } from '@/lib/supabase/actions/activites'
 import { getTemoignages } from '@/lib/supabase/actions/temoignages'
 import { safeFetch } from '@/lib/supabase/safe-fetch'
@@ -73,8 +74,14 @@ export default async function HomePage() {
 
           <div className="hidden lg:flex flex-col gap-4">
             <div className="relative">
-              <div className="w-full aspect-[3/2] rounded-3xl bg-violet-100 flex items-center justify-center shadow-2xl shadow-violet-200 rotate-1">
-                <span className="text-8xl">✝</span>
+              <div className="w-full aspect-[3/2] rounded-3xl overflow-hidden shadow-2xl shadow-violet-200 rotate-1">
+                <Image
+                  src="https://iafuduxsvornwngbhtcq.supabase.co/storage/v1/object/public/uploads/isc%2025.jpg"
+                  alt="ISC 2025"
+                  fill
+                  className="object-cover"
+                  priority
+                />
               </div>
               <div className="absolute -bottom-4 -left-4 bg-amber-400 rounded-2xl p-4 shadow-xl -rotate-2">
                 <p className="text-violet-900 font-black text-sm">✝ Chaque mercredi</p>
