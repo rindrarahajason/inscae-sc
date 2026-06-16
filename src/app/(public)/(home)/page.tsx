@@ -43,7 +43,7 @@ export default async function HomePage() {
 
             <p className="text-lg text-stone-600 leading-relaxed mb-8 max-w-lg font-medium">
               L&apos;INSCAE Section Chrétienne unit les étudiants et anciens de l&apos;INSCAE
-              autour de <strong className="text-violet-700">Foi · Excellence · Service</strong> depuis 1999.
+              autour de <strong className="text-violet-700">Jésus-Christ</strong> depuis 1999.
             </p>
 
             <div className="flex flex-wrap gap-3">
