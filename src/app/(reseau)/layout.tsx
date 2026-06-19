@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Home, MessageSquare, Users, User, LayoutDashboard, UserPlus } from 'lucide-react'
 import MemberSignOut from '@/components/reseau/MemberSignOut'
+import BottomNav from '@/components/reseau/BottomNav'
+import ActiveNavLink from '@/components/reseau/ActiveNavLink'
 import { getCurrentProfile } from '@/lib/supabase/actions/reseau'
 import { isSupabaseConfigured } from '@/lib/supabase/safe-fetch'
 
@@ -38,16 +40,12 @@ export default async function ReseauLayout({ children }: { children: React.React
         </div>
         <nav className="flex-1 space-y-1">
           {NAV.map(({ href, label, icon: Icon }) => (
-            <Link key={href} href={href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-stone-600 hover:bg-violet-50 hover:text-violet-800 transition-colors text-sm font-bold">
-              <Icon size={18} />
-              {label}
-            </Link>
+            <ActiveNavLink key={href} href={href} label={label} icon={Icon} />
           ))}
         </nav>
         <div className="border-t-2 border-stone-100 pt-4 space-y-2">
           {isAdmin && (
-            <Link href="/admin" className="flex items-center gap-2 px-3 py-2 rounded-xl text-violet-700 bg-violet-50 hover:bg-violet-100 transition-colors text-sm font-bold">
+            <Link href="/admin" className="flex items-center gap-2 px-3 py-2 rounded-xl text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors text-sm font-bold">
               <LayoutDashboard size={16} />
               Tableau de bord admin
             </Link>
@@ -59,23 +57,8 @@ export default async function ReseauLayout({ children }: { children: React.React
         </div>
       </aside>
 
-      {/* Bottom nav mobile */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t-2 border-stone-100 flex justify-around py-2 z-40">
-        {NAV.map(({ href, label, icon: Icon }) => (
-          <Link key={href} href={href} aria-label={label}
-            className="flex flex-col items-center gap-0.5 px-2 py-1 text-stone-500 hover:text-violet-700">
-            <Icon size={20} />
-            <span className="text-[10px] font-semibold">{label.split("'")[0].split(' ')[0]}</span>
-          </Link>
-        ))}
-        {isAdmin && (
-          <Link href="/admin" aria-label="Admin"
-            className="flex flex-col items-center gap-0.5 px-2 py-1 text-violet-600 hover:text-violet-800">
-            <LayoutDashboard size={20} />
-            <span className="text-[10px] font-semibold">Admin</span>
-          </Link>
-        )}
-      </nav>
+      {/* Bottom nav mobile — client component avec état actif */}
+      <BottomNav isAdmin={!!isAdmin} />
 
       {/* Contenu */}
       <main className="flex-1 min-w-0 pb-20 md:pb-0">

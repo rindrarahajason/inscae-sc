@@ -2,6 +2,9 @@
 
 import { useState, useTransition } from 'react'
 import ImageUpload from '@/components/ui/ImageUpload'
+import MemberSignOut from '@/components/reseau/MemberSignOut'
+import Link from 'next/link'
+import { LogOut, Globe } from 'lucide-react'
 
 type Profil = {
   id: string
@@ -122,6 +125,18 @@ export default function ProfilClient({
           {pending ? 'Enregistrement...' : 'Enregistrer'}
         </button>
       </form>
+
+      {/* Actions compte */}
+      <div className="mt-6 bg-white rounded-3xl border-2 border-stone-100 p-6 shadow-sm space-y-3">
+        <h2 className="text-sm font-black text-stone-500 uppercase tracking-wide mb-4">Mon compte</h2>
+        <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-stone-600 hover:bg-stone-50 transition-colors text-sm font-semibold">
+          <Globe size={18} className="text-stone-400" />
+          Retour au site public
+        </Link>
+        <div className="border-t border-stone-100 pt-3">
+          <MemberSignOut variant="full" />
+        </div>
+      </div>
     </div>
   )
 }
