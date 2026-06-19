@@ -2,16 +2,16 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --color-violet-50:  #eff6ff;
-  --color-violet-100: #dbeafe;
-  --color-violet-200: #bfdbfe;
-  --color-violet-300: #93c5fd;
-  --color-violet-400: #60a5fa;
-  --color-violet-500: #3b82f6;
-  --color-violet-600: #2563eb;
-  --color-violet-700: #1d4ed8;
-  --color-violet-800: #1e3a8a;
-  --color-violet-900: #1e3a8a;
+  --color-violet-50:  #d1fae5;
+  --color-violet-100: #a7f3d0;
+  --color-violet-200: #6ee7b7;
+  --color-violet-300: #34d399;
+  --color-violet-400: #10b981;
+  --color-violet-500: #059669;
+  --color-violet-600: #047857;
+  --color-violet-700: #065f46;
+  --color-violet-800: #064e3b;
+  --color-violet-900: #022c22;
 }
 
 /* Tiptap editor styles */
@@ -24,8 +24,8 @@
 }
 
 :root {
-  --violet: #1d4ed8;
-  --violet-light: #2563eb;
+  --violet: #065f46;
+  --violet-light: #059669;
   --amber: #F59E0B;
   --amber-light: #FCD34D;
   --coral: #F43F5E;
@@ -55,7 +55,7 @@ body {
 }
 .card-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px -8px rgba(29, 78, 216, 0.18);
+  box-shadow: 0 12px 40px -8px rgba(5, 150, 105, 0.18);
 }
 
 /* Underline fun */
@@ -91,4 +91,4 @@ body {
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f5f5f5; }
-::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #6ee7b7; border-radius: 3px; }
