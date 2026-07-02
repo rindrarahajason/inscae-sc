@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { getPresidents } from '@/lib/supabase/actions/presidents'
 import { getPhotosHistoire } from '@/lib/supabase/actions/photos_histoire'
 import { safeFetch } from '@/lib/supabase/safe-fetch'
@@ -135,8 +136,8 @@ export default async function HistoirePage() {
         )}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {data.map((p, i) => (
-            <div key={p.id}
-              className={`group text-center bg-white rounded-2xl p-4 border-2 card-lift ${
+            <Link key={p.id} href={`/presidents/${p.id}`}
+              className={`group text-center bg-white rounded-2xl p-4 border-2 card-lift cursor-pointer ${
                 p.actuel ? 'border-amber-400 shadow-lg shadow-amber-100' : 'border-stone-100 hover:border-violet-200'
               }`}>
               <div className="relative mx-auto mb-3 w-16 h-16">
@@ -150,13 +151,11 @@ export default async function HistoirePage() {
                 )}
               </div>
               <p className="text-xs font-bold text-stone-800 leading-tight">{p.full_name}</p>
-              <p className="text-[11px] text-violet-500 font-semibold mt-0.5">
-                {annee(p.debut_mandat)}
+              <p className="text-[11px] text-violet-500 font-semibold mt-0.5">{annee(p.debut_mandat)}</p>
+              <p className="text-[10px] text-violet-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
+                Voir le bureau →
               </p>
-              {p.bio && (
-                <p className="text-[10px] text-stone-400 mt-1 leading-tight opacity-0 group-hover:opacity-100 transition-opacity">{p.bio}</p>
-              )}
-            </div>
+            </Link>
           ))}
         </div>
       </section>

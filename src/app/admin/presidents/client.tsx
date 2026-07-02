@@ -136,6 +136,7 @@ export default function AdminPresidentsClient({ items, onCreate, onUpdate, onDel
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-3">
+                    <a href={`/admin/presidents/${item.id}`} className="text-xs text-amber-600 hover:text-amber-800 font-bold">Bureau</a>
                     <button onClick={() => openEdit(item)} className="text-xs text-violet-700 hover:text-violet-900 font-bold">Modifier</button>
                     <button onClick={() => handleDelete(item.id)} disabled={pending} className="text-xs text-red-400 hover:text-red-600 font-bold">Supprimer</button>
                   </div>
