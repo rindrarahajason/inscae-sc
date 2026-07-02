@@ -2,6 +2,7 @@ import { getPresidents } from '@/lib/supabase/actions/presidents'
 import { getMembresBureau, createMembreBureau, updateMembreBureau, deleteMembreBureau } from '@/lib/supabase/actions/membres_bureau'
 import { safeFetch } from '@/lib/supabase/safe-fetch'
 import { notFound } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 import { PageHeader } from '@/components/admin/PageHeader'
 import Link from 'next/link'
 import AdminBureauClient from './client'
@@ -31,9 +32,11 @@ export default async function AdminBureauPage({ params }: { params: Promise<{ id
         photo_url: data.get('photo_url') as string || undefined,
         ordre: parseInt(data.get('ordre') as string) || 0,
       })
+      revalidatePath(`/admin/presidents/${id}`)
       return { success: true }
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : String(e) }
+      const msg = e instanceof Error ? e.message : (typeof e === 'object' && e !== null && 'message' in e ? String((e as {message: unknown}).message) : JSON.stringify(e))
+      return { error: msg }
     }
   }
 
@@ -46,9 +49,11 @@ export default async function AdminBureauPage({ params }: { params: Promise<{ id
         photo_url: data.get('photo_url') as string || null,
         ordre: parseInt(data.get('ordre') as string) || 0,
       })
+      revalidatePath(`/admin/presidents/${id}`)
       return { success: true }
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : String(e) }
+      const msg = e instanceof Error ? e.message : (typeof e === 'object' && e !== null && 'message' in e ? String((e as {message: unknown}).message) : JSON.stringify(e))
+      return { error: msg }
     }
   }
 
@@ -56,9 +61,11 @@ export default async function AdminBureauPage({ params }: { params: Promise<{ id
     'use server'
     try {
       await deleteMembreBureau(data.get('id') as string)
+      revalidatePath(`/admin/presidents/${id}`)
       return { success: true }
     } catch (e: unknown) {
-      return { error: e instanceof Error ? e.message : String(e) }
+      const msg = e instanceof Error ? e.message : (typeof e === 'object' && e !== null && 'message' in e ? String((e as {message: unknown}).message) : JSON.stringify(e))
+      return { error: msg }
     }
   }
 
